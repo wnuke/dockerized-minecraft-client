@@ -6,9 +6,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.util.Arrays;
@@ -22,6 +20,26 @@ import net.minecraft.client.MinecraftClient;
 
 public class HeadlessAPI implements ModInitializer {
     private static final MinecraftClient mc = MinecraftClient.getInstance();
+
+    public static Map<String, List<String>> splitQuery(String query) {
+        if (query == null || "".equals(query)) {
+            return
+                    Collections.emptyMap();
+        }
+
+        return Pattern.compile("&").splitAsStream(query)
+                .map(s -> Arrays.copyOf(s.split("="), 2))
+                .collect(groupingBy(s -> decode(s[0]), mapping(s -> decode(s[1]), toList())));
+
+    }
+
+    private static String decode(final String encoded) {
+        try {
+            return encoded == null ? null : URLDecoder.decode(encoded, "UTF-8");
+        } catch (final UnsupportedEncodingException e) {
+            throw new RuntimeException("UTF-8 is a required encoding", e);
+        }
+    }
 
     public void apiServer() throws IOException {
         int serverPort = 8000;
@@ -44,7 +62,7 @@ public class HeadlessAPI implements ModInitializer {
                         mc.player.sendChatMessage(command);
                         response = command + " : Sent.\n";
                     } else {
-                        response = "Player not yet connected to a server.\n";
+                        response = "Not in a world or server.\n";
                     }
                 } else {
                     response = "Invalid request.\n";
@@ -62,29 +80,21 @@ public class HeadlessAPI implements ModInitializer {
         server.start();
     }
 
-    public static Map<String, List<String>> splitQuery(String query) {
-        if (query == null || "".equals(query)) {
-            return
-                    Collections.emptyMap();
-        }
-
-        return Pattern.compile("&").splitAsStream(query)
-                .map(s -> Arrays.copyOf(s.split("="), 2))
-                .collect(groupingBy(s -> decode(s[0]), mapping(s -> decode(s[1]), toList())));
-
-    }
-
-
-    private static String decode(final String encoded) {
-        try {
-            return encoded == null ? null : URLDecoder.decode(encoded, "UTF-8");
-        } catch (final UnsupportedEncodingException e) {
-            throw new RuntimeException("UTF-8 is a required encoding", e);
+    public void consoleScanner() throws IOException {
+        while (true) {
+            String consoleLine = System.console().readLine();
+            if (!consoleLine.matches("\\[..:..:..\\] \\[.*\\/.*\\]:.*")) {
+                if (mc.player != null) {
+                    mc.player.sendChatMessage(consoleLine);
+                } else {
+                    System.out.println("Not in a world or server.");
+                }
+            }
         }
     }
 
     public void onInitialize() {
-        Thread test = new Thread("HTTP-API") {
+        Thread api = new Thread("HTTP-API") {
             @Override
             public void run() {
                 System.out.println("Starting web server...");
@@ -96,10 +106,23 @@ public class HeadlessAPI implements ModInitializer {
                 }
             }
         };
-        test.start();
+        api.start();
+        Thread console = new Thread("Console") {
+            @Override
+            public void run() {
+                System.out.println("Starting console reader...");
+                try {
+                    consoleScanner();
+                    System.out.println("Console reader started.");
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        };
+        console.start();
         System.out.println("--------------------------");
         System.out.println();
-        System.out.println("Headless MC API loaded!");
+        System.out.println("Headless MC loaded!");
         System.out.println();
         System.out.println("--------------------------");
     }
