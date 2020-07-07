@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "headless-mc-api",
+  "name": "Headless API",
+  "version": "1.0.0",
+  "authors": ["wnuke"],
+  "description": "An API to do stuff in Minecraft.",
+  "contact": {
+    "email": "wnuke@wnuke.dev",
+    "homepage": "https://client.wnuke.dev",
+    "issues": "https://git.wnuke.dev/wnuke/headless-fabric-mc/-/issues",
+    "sources": "https://git.wnuke.dev/wnuke/headless-fabric-mc"
+  },
+  "entrypoints": {
+    "main": [
+      "dev.wnuke.headlessapi.HeadlessAPI"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.8.9"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}
