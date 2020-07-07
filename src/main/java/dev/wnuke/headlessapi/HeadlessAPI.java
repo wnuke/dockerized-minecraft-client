@@ -1,5 +1,8 @@
 package dev.wnuke.headlessapi;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 import net.fabricmc.api.ModInitializer;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -17,6 +20,7 @@ import java.util.regex.Pattern;
 
 import com.sun.net.httpserver.HttpServer;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 
 public class HeadlessAPI implements ModInitializer {
     private static final MinecraftClient mc = MinecraftClient.getInstance();
@@ -72,18 +76,99 @@ public class HeadlessAPI implements ModInitializer {
                 output.write(response.getBytes());
                 output.flush();
             } else {
-                exchange.sendResponseHeaders(405, -1);// 405 Method Not Allowed
+                exchange.sendResponseHeaders(405, -1);
             }
             exchange.close();
         }));
-        server.setExecutor(null); // creates a default executor
+        /*server.createContext("/chat", (exchange -> {
+            if ("GET".equals(exchange.getRequestMethod())) {
+                StringBuilder messages = new StringBuilder();
+                //TODO: get chat messages
+                exchange.sendResponseHeaders(200, messages.toString().getBytes().length);
+                OutputStream output = exchange.getResponseBody();
+                output.write(messages.toString().getBytes());
+                output.flush();
+            } else {
+                exchange.sendResponseHeaders(405, -1);
+            }
+            exchange.close();
+        }));*/
+        server.createContext("/stats", (exchange -> {
+            if ("GET".equals(exchange.getRequestMethod())) {
+                String message;
+                if (mc.player != null) {
+                    Gson gson = new GsonBuilder().serializeNulls().create();
+                    PlayerStats player = new PlayerStats(mc.player);
+                    message = gson.toJson(player) + "\n";
+                } else {
+                    message = "Not in a world or server.\n";
+                }
+                exchange.sendResponseHeaders(200, message.getBytes().length);
+                OutputStream output = exchange.getResponseBody();
+                output.write(message.getBytes());
+                output.flush();
+            } else {
+                exchange.sendResponseHeaders(405, -1);
+            }
+            exchange.close();
+        }));
+        server.setExecutor(null);
         server.start();
     }
 
-    public void consoleScanner() throws IOException {
+    private static class PlayerStats {
+        @SerializedName("Username")
+        String name;
+        @SerializedName("UUID")
+        String uuid;
+        @SerializedName("Player")
+        PlayerInfo player;
+        @SerializedName("Coordinates")
+        Position coords;
+
+        private static class PlayerInfo {
+            @SerializedName("Health")
+            float health;
+            @SerializedName("Hunger")
+            float hunger;
+            @SerializedName("Saturation")
+            float saturation;
+        }
+
+        private static class Position {
+            @SerializedName("X")
+            double x;
+            @SerializedName("Y")
+            double y;
+            @SerializedName("Z")
+            double z;
+
+            public Position(double x, double y, double z) {
+                this.x = x;
+                this.y = y;
+                this.z = z;
+            }
+        }
+
+        public PlayerStats(ClientPlayerEntity player) {
+            name = player.getName().asString();
+            uuid = player.getUuidAsString();
+            this.player = new PlayerInfo();
+            this.player.health = player.getHealth();
+            this.player.hunger = player.getHungerManager().getFoodLevel();
+            this.player.saturation = player.getHungerManager().getSaturationLevel();
+            coords = new Position(player.getX(), player.getY(), player.getZ());
+        }
+    }
+
+    public void consoleScanner() {
         while (true) {
             String consoleLine = System.console().readLine();
             if (!consoleLine.matches("\\[..:..:..\\] \\[.*\\/.*\\]:.*")) {
+                if (consoleLine.equals("kill-game")) {
+                    mc.stop();
+                    break;
+                }
                 if (mc.player != null) {
                     mc.player.sendChatMessage(consoleLine);
                 } else {
@@ -111,12 +196,8 @@ public class HeadlessAPI implements ModInitializer {
             @Override
             public void run() {
                 System.out.println("Starting console reader...");
-                try {
-                    consoleScanner();
-                    System.out.println("Console reader started.");
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
+                consoleScanner();
+                System.out.println("Console reader started.");
             }
         };
         console.start();
