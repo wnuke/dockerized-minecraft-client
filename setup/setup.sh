@@ -1,23 +1,8 @@
-#!/usr/bin/env bash
-
-pip3 install minecraft-launcher-cmd minecraft-launcher-lib
-./install_mc.py
-mkdir minecraft/versions
 mkdir minecraft/versions/fabric-1.15.2
 cp fabric-1.15.2.json minecraft/versions/fabric-1.15.2/fabric-1.15.2.json
 mkdir minecraft/mods
-git clone https://git.wnuke.dev/external-imports/fabritone.git -b fabritone/1.15.x-Fabric
-cd fabritone
-chmod +x gradlew
-./gradlew build
-cd ..
-cp fabritone/build/libs/fabritone-1.5.3.jar minecraft/mods/fabritone.jar
-git clone https://docker-build-0:J9fzfaWC7_v2Gv5Tmz6Z@git.wnuke.dev/wnuke/headless-fabric-mc.git
-cd headless-fabric-mc
-chmod +x gradlew
-./gradlew build
-cd ..
-cp headless-fabric-mc/build/libs/headless-api-1.0.0.jar minecraft/mods/headless-api.jar
+cp ../fabritone/build/libs/fabritone-1.5.3.jar minecraft/mods/fabritone.jar
+cp ../build/libs/headless-api-1.0.0.jar minecraft/mods/headlessapi.jar
 mkdir instance
 cp options.txt instance/options.txt
 mvn dependency:copy-dependencies

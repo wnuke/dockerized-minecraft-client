@@ -1,0 +1,4 @@
+[submodule "fabritone"]
+	path = fabritone
+	url = https://git.wnuke.dev/external-imports/fabritone.git
+	branch = fabritone/1.15.x-Fabric
