@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "dev.wnuke.headlessapi.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ChatHud",
+    "DeathScreen",
+    "WorldRenderer"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

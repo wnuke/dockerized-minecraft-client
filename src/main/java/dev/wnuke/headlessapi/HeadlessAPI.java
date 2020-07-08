@@ -12,10 +12,7 @@ import static java.util.stream.Collectors.toList;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import com.sun.net.httpserver.HttpServer;
@@ -24,11 +21,11 @@ import net.minecraft.client.network.ClientPlayerEntity;
 
 public class HeadlessAPI implements ModInitializer {
     private static final MinecraftClient mc = MinecraftClient.getInstance();
+    public static ArrayList<String> chatMessages = new ArrayList<>();
 
     public static Map<String, List<String>> splitQuery(String query) {
         if (query == null || "".equals(query)) {
-            return
-                    Collections.emptyMap();
+            return Collections.emptyMap();
         }
 
         return Pattern.compile("&").splitAsStream(query)
@@ -55,14 +52,6 @@ public class HeadlessAPI implements ModInitializer {
                 String response;
                 if (!command.equals("")) {
                     if (mc.player != null) {
-                        if (mc.player.getHealth() >= 0) {
-                            mc.player.requestRespawn();
-                            try {
-                                this.wait(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
                         mc.player.sendChatMessage(command);
                         response = command + " : Sent.\n";
                     } else {
@@ -80,10 +69,12 @@ public class HeadlessAPI implements ModInitializer {
             }
             exchange.close();
         }));
-        /*server.createContext("/chat", (exchange -> {
+        server.createContext("/chat", (exchange -> {
             if ("GET".equals(exchange.getRequestMethod())) {
                 StringBuilder messages = new StringBuilder();
-                //TODO: get chat messages
+                for (String message : chatMessages) {
+                    messages.append(message).append("\n");
+                }
                 exchange.sendResponseHeaders(200, messages.toString().getBytes().length);
                 OutputStream output = exchange.getResponseBody();
                 output.write(messages.toString().getBytes());
@@ -92,7 +83,7 @@ public class HeadlessAPI implements ModInitializer {
                 exchange.sendResponseHeaders(405, -1);
             }
             exchange.close();
-        }));*/
+        }));
         server.createContext("/stats", (exchange -> {
             if ("GET".equals(exchange.getRequestMethod())) {
                 String message;

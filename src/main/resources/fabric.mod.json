@@ -19,6 +19,9 @@
   "depends": {
     "fabricloader": ">=0.8.9"
   },
+  "mixins": [
+    "headlessapi.mixins.json"
+  ],
   "suggests": {
     "flamingo": "*"
   }

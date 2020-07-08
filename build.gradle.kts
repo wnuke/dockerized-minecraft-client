@@ -28,5 +28,6 @@ dependencies {
 tasks {
     named<ProcessResources>("processResources") {
         include("fabric.mod.json")
+        include("headlessapi.mixins.json")
     }
 }
