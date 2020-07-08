@@ -1,10 +1,14 @@
-FROM java:8
+FROM ubuntu:20.04
 
-COPY . /home/root/java/setup
-WORKDIR /home/root/java/setup
+COPY minecraft /srv/minecraft
 
-RUN apt-get install python3 python3-pip
-RUN pip install minecraft-launcher-cmd
-RUN apt-get install mesa-common-dev libosmesa6-dev libglu1-mesa-dev
+WORKDIR /srv/minecraft
 
-ENTRYPOINT ["minecraft-launcher-cmd", "--version", "fabric-1.15.2", "--minecraftDir", "/home/root/java/setup/minecraft", "--gameDir", "/home/root/java/setup/instance", "--resolutionWidth", "1", "--resolutionHeight", "1", "--username", "$USERNAME", "--password", "$PASSWORD"]
+ENV USERNAME username
+ENV PASSWORD password
+RUN apt-get update -y
+RUN apt-get install python3 python3-pip openjdk-8-jdk-headless -y
+RUN pip3 install minecraft-launcher-cmd
+RUN apt-get install mesa-common-dev libosmesa6-dev libglu1-mesa-dev -y
+
+ENTRYPOINT minecraft-launcher-cmd --version "fabric-1.15.2" --minecraftDir "/srv/minecraft" --gameDir "/srv/minecraft" --resolutionWidth 1 --resolutionHeight 1 --username $USERNAME --password $PASSWORD
