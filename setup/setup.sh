@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-pip install --user pipenv
-pip install --user minecraft-launcher-cmd
+pip3 install --user pipenv
+pip3 install --user minecraft-launcher-cmd
 pipenv sync
 ./install_mc.py
 mkdir minecraft/versions
