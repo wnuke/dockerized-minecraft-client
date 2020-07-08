@@ -30,14 +30,14 @@ ENV VERSION="fabric-1.15.2"
 EXPOSE 8000
 COPY . /srv/headlessmcgit
 WORKDIR /srv/headlessmcgit
-CMD ["git", "submodule", "update"]
-CMD ["bash", "gradlew", "build"]
+RUN ["git", "submodule", "update"]
+RUN ["bash", "gradlew", "build"]
 WORKDIR /srv/headlessmcgit/fabritone
-CMD ["bash", "gradlew", "build"]
+RUN ["bash", "gradlew", "build"]
 WORKDIR /srv/headlessmcgit/setup
-CMD ["python", "install_mc.py"]
-CMD ["bash", "setup.sh"]
-CMD ["mv", "minecraft", "/srv/minecraft"]
-CMD ["mv", "instance", "/srv/instance"]
+RUN ["python", "install_mc.py"]
+RUN ["bash", "setup.sh"]
+RUN ["mv", "minecraft", "/srv/minecraft"]
+RUN ["mv", "instance", "/srv/instance"]
 
 ENTRYPOINT Xvfb :5 -screen 0 100x100x24 & export DISPLAY=:5; minecraft-launcher-cmd --version $VERSION --minecraftDir "/srv/minecraft" --gameDir "/srv/instance" --resolutionWidth 10 --resolutionHeight 10 --username $USERNAME --password $PASSWORD
