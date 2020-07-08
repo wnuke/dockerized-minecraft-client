@@ -22,7 +22,7 @@ rm -r /root/.cache
 
 RUN pip install minecraft-launcher-cmd minecraft-launcher-lib
 
-ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
+#ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
 ENV USERNAME="username"
 ENV PASSWORD="password"
 ENV VERSION="fabric-1.15.2"
