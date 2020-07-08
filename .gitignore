@@ -6,3 +6,5 @@ build
 .gradle
 .idea
 setup/minecraft
+*.DS_Store
+*/*.DS_Store
