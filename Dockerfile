@@ -1,5 +1,5 @@
 ### 1. Get Linux
-FROM alpine:3.7
+FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim
 
 ### 2. Get Java via the package manager
 RUN apk update \
@@ -7,7 +7,6 @@ RUN apk update \
 && apk add bash \
 && apk add --virtual=build-dependencies unzip \
 && apk add curl \
-&& apk add openjdk8-jdk \
 && apk add git \
 && apk add xvfb \
 && apk add maven
