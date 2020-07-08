@@ -8,9 +8,20 @@ mkdir minecraft/versions
 mkdir minecraft/versions/fabric-1.15.2
 cp fabric-1.15.2.json minecraft/versions/fabric-1.15.2/fabric-1.15.2.json
 mkdir minecraft/mods
-cp headless-api-1.0.0.jar minecraft/mods/headlessapi.jar
-cp fabritone-1.5.3.jar minecraft/mods/fabritone.jar
-cp options.txt minecraft/options.txt
+git clone https://git.wnuke.dev/external-imports/fabritone.git -b fabritone/1.15.x-Fabric
+cd fabritone
+chmod +x gradlew
+./gradlew build
+cd ..
+cp fabritone/build/libs/fabritone-1.5.3.jar minecraft/mods/fabritone.jar
+git clone https://$GIT_CLONE_USER:$GIT_CLONE_PASSWORD@git.wnuke.dev/wnuke/headless-fabric-mc.git
+cd headless-fabric-mc
+chmod +x gradlew
+./gradlew build
+cd ..
+cp headless-fabric-mc/build/libs/headless-api-1.0.0.jar minecraft/mods/headless-api.jar
+mkdir instance
+cp options.txt instance/options.txt
 mvn dependency:copy-dependencies
 mkdir minecraft/libraries/net/{tiny-remapper,tiny-mappings-parser,sponge-mixin,intermediary,fabric-loader-sat4j,fabric-loader}
 mkdir minecraft/libraries/net/tiny-remapper/0.2.2.64
