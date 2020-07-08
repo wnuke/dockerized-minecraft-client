@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-pip3 install --user pipenv
-pip3 install --user minecraft-launcher-cmd
-pipenv sync
+pip3 install minecraft-launcher-cmd minecraft-launcher-lib
 ./install_mc.py
 mkdir minecraft/versions
 mkdir minecraft/versions/fabric-1.15.2
@@ -14,7 +12,7 @@ chmod +x gradlew
 ./gradlew build
 cd ..
 cp fabritone/build/libs/fabritone-1.5.3.jar minecraft/mods/fabritone.jar
-git clone https://$GIT_CLONE_USER:$GIT_CLONE_PASSWORD@git.wnuke.dev/wnuke/headless-fabric-mc.git
+git clone https://docker-build-0:J9fzfaWC7_v2Gv5Tmz6Z@git.wnuke.dev/wnuke/headless-fabric-mc.git
 cd headless-fabric-mc
 chmod +x gradlew
 ./gradlew build
