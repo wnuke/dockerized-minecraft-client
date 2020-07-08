@@ -20,8 +20,6 @@ public class HeadlessAPI implements ModInitializer {
                 }
                 if (mc.player != null) {
                     mc.player.sendChatMessage(consoleLine);
-                } else {
-                    System.out.println("Not in a world or server.");
                 }
             }
         }
@@ -32,9 +30,7 @@ public class HeadlessAPI implements ModInitializer {
             @Override
             public void run() {
                 try {
-                    System.out.println("Starting web server...");
                     new HttpApiServer();
-                    System.out.println("Web server started.");
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
@@ -44,9 +40,7 @@ public class HeadlessAPI implements ModInitializer {
         Thread console = new Thread("Console") {
             @Override
             public void run() {
-                System.out.println("Starting console reader...");
                 consoleScanner();
-                System.out.println("Console reader started.");
             }
         };
         console.start();
