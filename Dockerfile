@@ -1,29 +1,41 @@
-### 1. Get Linux
+### 1. Get Ubuntu Bionic (18.04) with jdk 8
 FROM adoptopenjdk:8u252-b09-jdk-hotspot-bionic
 
+### 2. Get Python 3.7 for Ubuntu Bionic
 COPY --from=iamjohnnym/bionic-python:3.7 / /
 
+### 3-4. Get XVFB for headless render output
 RUN apt-get update -y
 RUN apt-get install xvfb -y
 
-RUN pip3 install minecraft-launcher-cmd minecraft-launcher-lib
+### 4. Install a command line Minecraft launcher
+RUN pip3 install minecraft-launcher-cmd
 
+### 5. Set default environement variables
 ENV USERNAME="username" \
     PASSWORD="password" \
     VERSION="fabric-1.15.2" \
     MCDIR="/srv/minecraft" \
     INSTDIR="/srv/instance"
 
+### 6. Get the setup files
 COPY setup /srv/setup
+### 7. Get the Fabritone source files
 COPY fabritone /srv/headlessmcgit/fabritone
+### 8. Build the Fabritone jar
 WORKDIR /srv/headlessmcgit/fabritone
 RUN sh gradlew --no-daemon build
+### 9. Move the Fabritone jar to the mods folder
 RUN mkdir /srv/setup/mods \
     & mv build/libs/fabritone-1.5.3.jar /srv/setup/mods/
+### 10. Get the API mod files
 COPY headless-api-mod /srv/headlessmcgit/headless-api-mod
+### 11. Build the API mod jar
 WORKDIR /srv/headlessmcgit/headless-api-mod
 RUN sh gradlew --no-daemon build
+### 12. Move the API mod jar to the mods folder
 RUN mv build/libs/headless-api-1.0.0.jar /srv/setup/mods/
+### 13. Remove unneeded files
 WORKDIR /srv
 RUN rm -rf /srv/headlessmcgit
 
