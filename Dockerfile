@@ -1,9 +1,9 @@
-FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as fabritone-build
+# FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as fabritone-build
 
-COPY fabritone /srv/headlessmcgit/fabritone
+# COPY fabritone /srv/headlessmcgit/fabritone
 
-WORKDIR /srv/headlessmcgit/fabritone
-RUN sh gradlew build
+# WORKDIR /srv/headlessmcgit/fabritone
+# RUN sh gradlew build
 
 
 FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as headlessapi-build
@@ -17,7 +17,7 @@ RUN sh gradlew build
 FROM adoptopenjdk:8u252-b09-jdk-hotspot-bionic
 
 COPY --from=iamjohnnym/bionic-python:3.7 / /
-COPY --from=fabritone-build /srv/headlessmcgit/fabritone/build/libs/fabritone-1.5.3.jar /srv/mods/fabritone-1.5.3.jar
+# COPY --from=fabritone-build /srv/headlessmcgit/fabritone/build/libs/fabritone-1.5.3.jar /srv/mods/fabritone-1.5.3.jar
 COPY --from=headlessapi-build /srv/headlessmcgit/headless-api-mod/build/libs/headless-api-1.0.0.jar /srv/mods/headless-api-1.0.0.jar
 COPY setup /srv/setup
 
