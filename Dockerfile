@@ -4,7 +4,7 @@ FROM adoptopenjdk:8u252-b09-jdk-hotspot-bionic
 COPY --from=iamjohnnym/bionic-python:3.7 / /
 
 RUN apt-get update -y
-RUN apt-get install bash xvfb -y
+RUN apt-get install xvfb -y
 
 RUN pip3 install minecraft-launcher-cmd minecraft-launcher-lib
 
@@ -16,7 +16,7 @@ ENV USERNAME="username" \
 
 COPY setup /srv/headlessmcgit/setup
 WORKDIR /srv/headlessmcgit/setup
-RUN ["bash", "setup.sh"]
+RUN ["sh", "setup.sh"]
 COPY fabritone /srv/headlessmcgit/fabritone
 WORKDIR /srv/headlessmcgit/fabritone
 RUN ["sh", "gradlew", "--no-daemon", "build"]
