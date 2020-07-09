@@ -16,7 +16,8 @@ ENV USERNAME="username" \
     PASSWORD="password" \
     VERSION="fabric-1.15.2" \
     MCDIR="/srv/minecraft" \
-    INSTDIR="/srv/instance"
+    INSTDIR="/srv/instance" \
+    LAUNCHARGS=""
 
 ### 6. Get the setup files
 COPY setup /srv/setup
@@ -41,4 +42,4 @@ RUN mv build/libs/headless-api-1.0.0.jar /srv/setup/mods/
 WORKDIR /srv
 RUN rm -rf /srv/headlessmcgit
 
-ENTRYPOINT Xvfb :5 -screen 0 100x100x24 & export DISPLAY=:5; /srv/setup/setup.sh; minecraft-launcher-cmd --version "$VERSION" --minecraftDir "$MCDIR" --gameDir "$INSTDIR" --resolutionWidth 10 --resolutionHeight 10 --username "$USERNAME" --password "$PASSWORD"
+ENTRYPOINT Xvfb :5 -screen 0 100x100x24 & export DISPLAY=:5; /srv/setup/setup.sh; minecraft-launcher-cmd --version "$VERSION" --minecraftDir "$MCDIR" --gameDir "$INSTDIR" --resolutionWidth 10 --resolutionHeight 10 --username "$USERNAME" --password "$PASSWORD" $LAUNCHARGS
