@@ -1,0 +1,10 @@
+*/.gradle
+*/build
+*/run
+*/*.iml
+*/*.ipr
+*/*.iws
+*/*.bat
+*/.idea
+*/Dockerfile
+Dockerfile
