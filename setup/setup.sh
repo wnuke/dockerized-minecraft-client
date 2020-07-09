@@ -1,10 +1,10 @@
 mkdir $INSTDIR
 mkdir $INSTDIR/mods
-mv options.txt $INSTDIR/options.txt
-mkdir $MCDIR
 mkdir $MCDIR/versions
 mkdir $MCDIR/versions/fabric-1.15.2
-mv fabric-1.15.2.json $MCDIR/versions/fabric-1.15.2/fabric-1.15.2.json
+cp /srv/setup/fabric-1.15.2.json $MCDIR/versions/fabric-1.15.2/fabric-1.15.2.json
+cp /srv/setup/options.txt $INSTDIR/options.txt
+mkdir $MCDIR
 mkdir $MCDIR/libraries
 mkdir $MCDIR/libraries/net
 mkdir $MCDIR/libraries/net/tiny-remapper
