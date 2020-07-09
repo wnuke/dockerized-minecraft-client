@@ -4,15 +4,16 @@ FROM adoptopenjdk:8u252-b09-jdk-hotspot-bionic
 COPY --from=iamjohnnym/bionic-python:3.7 / /
 
 RUN apt-get update -y \
-&& apt-get install bash xvfb -y
+    && apt-get upgrade -y \
+    && apt-get install bash xvfb git -y
 
 RUN pip3 install minecraft-launcher-cmd minecraft-launcher-lib
 
-ENV USERNAME="username"
-ENV PASSWORD="password"
-ENV VERSION="fabric-1.15.2"
-ENV MCDIR="/srv/minecraft"
-ENV INSTDIR="/srv/instance"
+ENV USERNAME="username" \
+    PASSWORD="password" \
+    VERSION="fabric-1.15.2" \
+    MCDIR="/srv/minecraft" \
+    INSTDIR="/srv/instance"
 
 COPY setup /srv/headlessmcgit/setup
 WORKDIR /srv/headlessmcgit/setup
@@ -20,8 +21,9 @@ RUN ["bash", "setup.sh"]
 COPY fabritone /srv/headlessmcgit/fabritone
 WORKDIR /srv/headlessmcgit/fabritone
 RUN ["sh", "gradlew", "--no-daemon", "build"]
-RUN ["ls", "build/libs/"]
-RUN ["mv", "build/libs/fabritone-1.5.3.jar", "$INSTDIR/mods/"]
+RUN mkdir $INSTDIR \
+    && mkdir $INSTDIR/mods && \
+    mv build/libs/fabritone-1.5.3.jar $INSTDIR/mods/
 COPY headless-api-mod /srv/headlessmcgit/headless-api-mod
 WORKDIR /srv/headlessmcgit/headless-api-mod
 RUN ["sh", "gradlew", "--no-daemon", "build"]

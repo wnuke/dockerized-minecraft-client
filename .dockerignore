@@ -4,6 +4,9 @@
 */*.iml
 */*.ipr
 */*.iws
+*.iml
+*.ipr
+*.iws
 */*.bat
 */.idea
 */Dockerfile
