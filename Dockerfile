@@ -3,9 +3,9 @@ FROM adoptopenjdk:8u252-b09-jdk-hotspot-bionic
 
 COPY --from=iamjohnnym/bionic-python:3.7 / /
 
-RUN apt-get update -y \
-    && apt-get upgrade -y \
-    && apt-get install bash xvfb git -y
+RUN apt-get update -y
+RUN apt-get upgrade -y
+RUN apt-get install bash xvfb -y
 
 RUN pip3 install minecraft-launcher-cmd minecraft-launcher-lib
 
