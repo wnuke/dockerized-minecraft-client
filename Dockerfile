@@ -17,8 +17,14 @@ ENV INSTDIR="/srv/instance"
 COPY setup /srv/headlessmcgit/setup
 WORKDIR /srv/headlessmcgit/setup
 RUN ["bash", "setup.sh"]
-WORKDIR /srv/headlessmcgit
-RUN ["bash", "buildmods.sh"]
+COPY fabritone /srv/headlessmcgit/fabritone
+WORKDIR /srv/headlessmcgit/fabritone
+RUN ["sh", "gradlew", "--no-daemon", "build"]
+RUN ["mv", "build/libs/fabritone-1.5.3.jar", "$INSTDIR/mods/"]
+COPY headless-api-mod /srv/headlessmcgit/headless-api-mod
+WORKDIR /srv/headlessmcgit/headless-api-mod
+RUN ["sh", "gradlew", "--no-daemon", "build"]
+RUN ["mv", "build/libs/headless-api-1.0.0.jar", "$INSTDIR/mods/"]
 WORKDIR /srv
 RUN ["rm", "-rf", "/srv/headlessmcgit"]
 

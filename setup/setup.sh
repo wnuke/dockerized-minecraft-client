@@ -1,4 +1,5 @@
 mkdir $INSTDIR
+mkdir $INSTDIR/mods
 mv options.txt $INSTDIR/options.txt
 mkdir $MCDIR
 mkdir $MCDIR/versions
