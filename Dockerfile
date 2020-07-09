@@ -26,7 +26,9 @@ RUN mkdir $INSTDIR \
 COPY headless-api-mod /srv/headlessmcgit/headless-api-mod
 WORKDIR /srv/headlessmcgit/headless-api-mod
 RUN ["sh", "gradlew", "--no-daemon", "build"]
-RUN ["mv", "build/libs/headless-api-1.0.0.jar", "$INSTDIR/mods/"]
+RUN mkdir $INSTDIR \
+    & mkdir $INSTDIR/mods \
+    & mv build/libs/headless-api-1.0.0.jar $INSTDIR/mods/
 WORKDIR /srv
 RUN ["rm", "-rf", "/srv/headlessmcgit"]
 
