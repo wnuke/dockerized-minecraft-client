@@ -19,27 +19,27 @@ ENV USERNAME="username" \
     INSTDIR="/srv/instance" \
     LAUNCHARGS=""
 
-### 6. Get the setup files
-COPY setup /srv/setup
-RUN mkdir /srv/setup/mods
-### 7. Get the Fabritone source files
+### 6. Get the Fabritone source files
 COPY fabritone /srv/headlessmcgit/fabritone
 RUN cp /srv/setup/gradle.properties /srv/headlessmcgit/fabritone/gradle.properties
-### 8. Build the Fabritone jar
+### 7. Build the Fabritone jar
 WORKDIR /srv/headlessmcgit/fabritone
 RUN sh gradlew --no-daemon build
-### 9. Move the Fabritone jar to the mods folder
+### 8. Create mods folder and move the Fabritone jar into it
+RUN mkdir /srv/mods
 RUN mv build/libs/fabritone-1.5.3.jar /srv/setup/mods/
-### 10. Get the API mod files
+### 9. Get the API mod files
 COPY headless-api-mod /srv/headlessmcgit/headless-api-mod
 RUN cp /srv/setup/gradle.properties /srv/headlessmcgit/headless-api-mod/gradle.properties
-### 11. Build the API mod jar
+### 10. Build the API mod jar
 WORKDIR /srv/headlessmcgit/headless-api-mod
 RUN sh gradlew --no-daemon build
-### 12. Move the API mod jar to the mods folder
+### 11. Move the API mod jar to the mods folder
 RUN mv build/libs/headless-api-1.0.0.jar /srv/setup/mods/
-### 13. Remove unneeded files
+### 12. Remove unneeded files
 WORKDIR /srv
 RUN rm -rf /srv/headlessmcgit
+### 13. Get setup files
+COPY setup /srv/setup
 
 ENTRYPOINT Xvfb :5 -screen 0 100x100x24 & export DISPLAY=:5; /srv/setup/setup.sh; minecraft-launcher-cmd --version "$VERSION" --minecraftDir "$MCDIR" --gameDir "$INSTDIR" --resolutionWidth 10 --resolutionHeight 10 --username "$USERNAME" --password "$PASSWORD" $LAUNCHARGS
