@@ -2,7 +2,7 @@
 
 Headless MC API is a Dockerized version of Minecraft with a FabricMC mod that allows you to control it via an HTTP API.
 
-## Setup (for developping the mod)
+## Setup (for developing the mod)
 
 Get access to the repo by asking wnuke (wnuke#1010 on Discord).
 Download the source code:
