@@ -10,21 +10,6 @@ public class HeadlessAPI implements ModInitializer {
     public static final MinecraftClient mc = MinecraftClient.getInstance();
     public static ArrayList<String> chatMessages = new ArrayList<>();
 
-    public void consoleScanner() {
-        while (true) {
-            String consoleLine = System.console().readLine();
-            if (!consoleLine.matches("\\[..:..:..\\] \\[.*\\/.*\\]:.*")) {
-                if (consoleLine.equals("kill-game")) {
-                    mc.stop();
-                    break;
-                }
-                if (mc.player != null) {
-                    mc.player.sendChatMessage(consoleLine);
-                }
-            }
-        }
-    }
-
     public void onInitialize() {
         Thread api = new Thread("HTTP-API") {
             @Override
@@ -37,13 +22,6 @@ public class HeadlessAPI implements ModInitializer {
             }
         };
         api.start();
-        Thread console = new Thread("Console") {
-            @Override
-            public void run() {
-                consoleScanner();
-            }
-        };
-        console.start();
         System.out.println("--------------------------");
         System.out.println();
         System.out.println("Headless MC loaded!");
