@@ -1,4 +1,4 @@
-if [ -f "/srv/setup/installed" ]; then
+if [ -f "$MCDIR/installed" ]; then
   echo "Minecraft is installed"
 else
   mkdir $INSTDIR
@@ -55,5 +55,5 @@ else
   curl https://maven.fabricmc.net/org/ow2/asm/asm/asm-tree/8.0/asm-tree-8.0.jar --output $MCDIR/libraries/org/ow2/asm/asm-tree/8.0/asm-tree-8.0.jar
   curl https://maven.fabricmc.net/org/ow2/asm/asm/asm-analysis/8.0/asm-analysis-8.0.jar --output $MCDIR/libraries/org/ow2/asm/asm-analysis/8.0/asm-analysis-8.0.jar
   curl https://maven.fabricmc.net/org/ow2/asm/asm/asm-commons/8.0/asm-commons-8.0.jar --output $MCDIR/libraries/org/ow2/asm/asm-commons/8.0/asm-commons-8.0.jar
-  echo installed > /srv/setup/installed
+  echo installed > $MCDIR/installed
 fi
