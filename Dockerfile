@@ -18,15 +18,12 @@ COPY setup /srv/setup
 COPY fabritone /srv/headlessmcgit/fabritone
 WORKDIR /srv/headlessmcgit/fabritone
 RUN sh gradlew --no-daemon build
-RUN mkdir $INSTDIR \
-    & mkdir $INSTDIR/mods \
-    & mv build/libs/fabritone-1.5.3.jar $INSTDIR/mods/
+RUN mkdir /srv/setup/mods \
+    & mv build/libs/fabritone-1.5.3.jar /srv/setup/mods/
 COPY headless-api-mod /srv/headlessmcgit/headless-api-mod
 WORKDIR /srv/headlessmcgit/headless-api-mod
 RUN sh gradlew --no-daemon build
-RUN mkdir $INSTDIR \
-    & mkdir $INSTDIR/mods \
-    & mv build/libs/headless-api-1.0.0.jar $INSTDIR/mods/
+RUN mv build/libs/headless-api-1.0.0.jar /srv/setup/mods/
 WORKDIR /srv
 RUN rm -rf /srv/headlessmcgit
 
