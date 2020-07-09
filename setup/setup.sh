@@ -2,6 +2,7 @@ if [ -f "$MCDIR/installed" ]; then
   echo "Minecraft is installed"
   rm /tmp/.X5-lock
 else
+  python3 install_mc.py
   mkdir $INSTDIR
   mkdir $INSTDIR/mods
   mkdir $MCDIR/versions
