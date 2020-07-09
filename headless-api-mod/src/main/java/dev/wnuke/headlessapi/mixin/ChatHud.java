@@ -20,6 +20,6 @@ public class ChatHud {
                 .withZone(ZoneOffset.UTC)
                 .format(Instant.now());
 
-        HeadlessAPI.chatMessages.add(timeStamp + " " + message.asString());
+        HeadlessAPI.chatMessages.add(timeStamp + " " + message.getString());
     }
 }

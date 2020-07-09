@@ -9,6 +9,7 @@ import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkState;
 import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
 import net.minecraft.network.packet.c2s.login.LoginHelloC2SPacket;
+import net.minecraft.text.LiteralText;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,6 +25,8 @@ public class HttpApiServer {
     private static AtomicInteger CONNECTOR_THREADS_COUNT;
     private static ClientConnection connection;
     private static String status;
+    private static boolean connecting;
+    private static Boolean connectGood;
 
     public HttpApiServer() throws IOException {
         Gson gson = new GsonBuilder().serializeNulls().create();
@@ -35,7 +38,7 @@ public class HttpApiServer {
                 if (!message.equals("")) {
                     if (mc.player != null) {
                         mc.player.sendChatMessage(message);
-                        he.sendResponseHeaders(204, -1);
+                        sendOkJsonResponse(gson.toJson("SENT MESSAGE"), he);
                     } else {
                         getCurrentStatus();
                         sendOkJsonResponse(gson.toJson(status), he);
@@ -72,11 +75,21 @@ public class HttpApiServer {
         }));
         server.createContext("/connect", (he -> {
             if ("GET".equals(he.getRequestMethod())) {
+                if (connection != null) {
+                    connection.disconnect(new LiteralText("LEAVE"));
+                }
                 sendOkJsonResponse(gson.toJson("CONNECTING TO " + he.getRequestURI().getQuery()), he);
-                System.out.println("Spliting request into port and address...");
                 String[] requestSplit = he.getRequestURI().getQuery().split(":");
-                System.out.println("Attempting connection to server...");
                 connectToServer(requestSplit[0], Integer.parseInt(requestSplit[1]));
+            }
+            he.close();
+        }));
+        server.createContext("/connect", (he -> {
+            if ("GET".equals(he.getRequestMethod())) {
+                if (connection != null) {
+                    connection.disconnect(new LiteralText("LEAVE"));
+                }
+                sendOkJsonResponse(gson.toJson("DISCONNECTED"), he);
             }
             he.close();
         }));
@@ -98,32 +111,42 @@ public class HttpApiServer {
     }
 
     public void getCurrentStatus() {
-        if (mc.getSession() == null) status = "NOT SIGNED IN";
-        else if (mc.player == null) status = "NOT IN WORLD";
-        else if (mc.getServer() == null) status = "NOT IN SERVER";
-        else status = "ALL GOOD";
+        if (mc.getSession() == null) {
+            status = "NOT SIGNED IN";
+        } else if (connecting) {
+            status = "CONNECTING TO SERVER";
+         } else if (connectGood != null) {
+            if (connectGood) {
+                status = "CONNECTION TO SERVER SUCCEEDED";
+            } else {
+                status = "CONNECTION TO SERVER FAILED";
+            }
+            connectGood = null;
+        } else if (mc.player == null) {
+            status = "NOT IN WORLD";
+        } else {
+            status = "ALL GOOD";
+        }
     }
 
     public void connectToServer(final String address, final int port) {
-        System.out.println("Connecting to " + address + " on port: " + port);
+        System.out.println("Connecting to " + address + " on port: " + port + "...");
         InetAddress inetAddress;
+        connecting = true;
         try {
-            System.out.println("Getting inet address...");
             inetAddress = InetAddress.getByName(address);
-            System.out.println("Setting connection...");
             connection = ClientConnection.connect(inetAddress, port, mc.options.shouldUseNativeTransport());
-            System.out.println("Setting packet listener...");
             connection.setPacketListener(new ClientLoginNetworkHandler(connection, mc, null, (text) -> {
                 System.out.println(text.asString());
             }));
-            System.out.println("Sending handshake packet...");
             connection.send(new HandshakeC2SPacket(address, port, NetworkState.LOGIN));
-            System.out.println("Sending login packet...");
             connection.send(new LoginHelloC2SPacket(mc.getSession().getProfile()));
             System.out.println("Connected.");
+            connectGood = true;
         } catch (Exception e) {
-            System.out.println("Couldn't connect to server.");
+            connectGood = false;
             e.printStackTrace();
         }
+        connecting = false;
     }
 }
