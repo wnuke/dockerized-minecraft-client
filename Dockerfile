@@ -38,8 +38,16 @@ RUN sh gradlew build
 RUN mv build/libs/headless-api-1.0.0.jar /srv/mods/
 ### 12. Remove unneeded files
 WORKDIR /srv
-RUN rm -rf /srv/headlessmcgit
+RUN rm -rf /srv/headlessmcgit & rm -rf ~/.gradle
 ### 13. Get setup files
 COPY setup /srv/setup
 
-ENTRYPOINT Xvfb :5 -screen 0 100x100x24 & export DISPLAY=:5; /srv/setup/setup.sh; minecraft-launcher-cmd --version "$VERSION" --minecraftDir "$MCDIR" --gameDir "$INSTDIR" --resolutionWidth 10 --resolutionHeight 10 --username "$USERNAME" --password "$PASSWORD" $LAUNCHARGS
+ENTRYPOINT Xvfb :5 -screen 0 100x100x24 & export DISPLAY=:5; \
+    /srv/setup/setup.sh; \
+    minecraft-launcher-cmd \
+    --version "$VERSION" \
+    --resolutionWidth 10 \
+    --resolutionHeight 10 --username "$USERNAME" \
+    --password "$PASSWORD" \
+    --jvmArguments="-Xms512M -Xmx1024M" \
+    $LAUNCHARGS

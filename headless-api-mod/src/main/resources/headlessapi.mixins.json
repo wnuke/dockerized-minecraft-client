@@ -5,6 +5,7 @@
   "mixins": [
     "ChatHud",
     "DeathScreen",
+    "GameRenderer",
     "WorldRenderer"
   ],
   "client": [
