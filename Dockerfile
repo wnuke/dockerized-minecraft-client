@@ -21,7 +21,7 @@ ENV USERNAME="username" \
 
 ### 6. Get the Fabritone source files
 COPY fabritone /srv/headlessmcgit/fabritone
-RUN cp /srv/setup/gradle.properties /srv/headlessmcgit/fabritone/gradle.properties
+COPY setup/gradle.properties /srv/headlessmcgit/fabritone/gradle.properties
 ### 7. Build the Fabritone jar
 WORKDIR /srv/headlessmcgit/fabritone
 RUN sh gradlew --no-daemon build
@@ -30,7 +30,7 @@ RUN mkdir /srv/mods
 RUN mv build/libs/fabritone-1.5.3.jar /srv/setup/mods/
 ### 9. Get the API mod files
 COPY headless-api-mod /srv/headlessmcgit/headless-api-mod
-RUN cp /srv/setup/gradle.properties /srv/headlessmcgit/headless-api-mod/gradle.properties
+COPY setup/gradle.properties /srv/headlessmcgit/headless-api-mod/gradle.properties
 ### 10. Build the API mod jar
 WORKDIR /srv/headlessmcgit/headless-api-mod
 RUN sh gradlew --no-daemon build
