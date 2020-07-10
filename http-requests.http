@@ -5,9 +5,7 @@ POST http://localhost:8000/disconnect
 POST http://localhost:8000/sendmsg
 Content-Type: application/json
 
-{
-  "message": "#test"
-}
+{"message": "#test"}
 
 ###
 
