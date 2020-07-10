@@ -17,7 +17,7 @@ cp /srv/baritone-api-1.5.3.jar /srv/minecraft/libraries/cabaletta/baritone-api/1
   echo "Baritone installed."
 
 (ls /srv/minecraft/libraries/org/spongepowered/mixin/0.7.11-SNAPSHOT/mixin-0.7.11-SNAPSHOT.jar && echo "Mixin already installed.") || \
-mkdir -p/srv/minecraft/libraries/org/spongepowered/mixin/0.7.11-SNAPSHOT \
+mkdir -p /srv/minecraft/libraries/org/spongepowered/mixin/0.7.11-SNAPSHOT \
   ;
 wget https://repo.spongepowered.org/maven/org/spongepowered/mixin/0.7.11-SNAPSHOT/mixin-0.7.11-20180703.121122-1.jar --output /srv/minecraft/libraries/org/spongepowered/mixin/0.7.11-SNAPSHOT/mixin-0.7.11-SNAPSHOT.jar &&
   echo "Mixin installed."

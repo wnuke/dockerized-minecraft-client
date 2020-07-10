@@ -6,7 +6,7 @@ POST http://localhost:8000/sendmsg
 Content-Type: application/json
 
 {
-  "message": "test"
+  "message": "#test"
 }
 
 ###
@@ -15,7 +15,7 @@ POST http://localhost:8000/connect
 Content-Type: application/json
 
 {
-  "address": "localhost",
+  "address": "10.1.1.174",
   "port": 25565
 }
 
