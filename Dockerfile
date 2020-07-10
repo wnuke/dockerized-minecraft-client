@@ -21,9 +21,9 @@ COPY --from=baritone-build "/srv/baritone/build/libs/baritone-api-1.5.3.jar" "/s
 ENV USERNAME="username" \
     PASSWORD="password"
 
-ENTRYPOINT Xvfb :5 -screen 0 100x100x24 \
+ENTRYPOINT "/srv/setup/setup.sh"; \
+    Xvfb :5 -screen 0 100x100x24 \
     & export DISPLAY=:5; \
-    "/srv/setup/setup.sh"; \
     minecraft-launcher-cmd \
     --version "1.15.2-Baritone" \
     --resolutionWidth 10 \
