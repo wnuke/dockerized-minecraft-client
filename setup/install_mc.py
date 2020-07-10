@@ -3,9 +3,7 @@
 import minecraft_launcher_lib
 
 def main():
-    version = "1.15.2"
-    directory = "/srv/minecraft"
-    minecraft_launcher_lib.install.install_minecraft_version(version, directory)
+    minecraft_launcher_lib.install.install_minecraft_version("1.12.2", "/srv/minecraft")
 
 if __name__ == "__main__":
     main()

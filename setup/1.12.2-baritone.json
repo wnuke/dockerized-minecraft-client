@@ -1,0 +1,37 @@
+{
+  "id": "1.12.2-baritone",
+  "inheritsFrom": "1.12.2",
+  "jar": "1.12.2",
+  "libraries": [
+    {
+      "name": "net.minecraft:launchwrapper:1.12"
+    },
+    {
+      "name": "cabaletta:baritone-standalone:1.2.14"
+    },
+    {
+      "name": "com.github.ImpactDevelopment:SimpleTweaker:1.2"
+    },
+    {
+      "name": "org.spongepowered:mixin:0.7.11-SNAPSHOT"
+    },
+    {
+      "name": "net.jodah:typetools:0.5.0"
+    },
+    {
+      "name": "org.ow2.asm:asm-all:5.2"
+    }
+  ],
+  "mainClass": "net.minecraft.launchwrapper.Launch",
+  "arguments": {
+    "game": [
+      "--tweakClass",
+      "baritone.launch.BaritoneTweaker"
+    ]
+  },
+  "downloads": {},
+  "minimumLauncherVersion": 0,
+  "releaseTime": "2019-04-02T12:14:19+01:00",
+  "time": "2019-04-08T20:02:19+01:00",
+  "type": "release"
+}
