@@ -15,11 +15,11 @@ RUN apt-get update -y && \
     pip3 install minecraft-launcher-cmd && \
     rm -rf /var/lib/apt/lists/*
 
+COPY "setup" "/srv/setup"
+COPY --from=baritone-build "/srv/baritone/build/libs/baritone-api-1.5.3.jar" "/srv/baritone-api-1.5.3.jar"
+
 ENV USERNAME="username" \
     PASSWORD="password"
-
-COPY "setup" "/srv/setup"
-COPY --from=baritone-build "/srv/baritone/build/libs/baritone-api-1.5.3.jar" "/srv/baritone-standalone-1.5.3.jar"
 
 ENTRYPOINT Xvfb :5 -screen 0 100x100x24 \
     & export DISPLAY=:5; \
