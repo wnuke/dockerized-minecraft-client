@@ -1,25 +1,14 @@
-# FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as fabritone-build
+FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as baritone-build
 
-# COPY fabritone /srv/headlessmcgit/fabritone
+COPY "baritone" "/srv/baritone"
 
-# WORKDIR /srv/headlessmcgit/fabritone
-# RUN sh gradlew build
-
-
-FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as headlessapi-build
-
-COPY headless-api-mod /srv/headlessmcgit/headless-api-mod
-
-WORKDIR /srv/headlessmcgit/headless-api-mod
+WORKDIR "/srv/baritone"
 RUN sh gradlew build
 
 
 FROM adoptopenjdk:8u252-b09-jdk-hotspot-bionic
 
 COPY --from=iamjohnnym/bionic-python:3.7 / /
-# COPY --from=fabritone-build /srv/headlessmcgit/fabritone/build/libs/fabritone-1.5.3.jar /srv/mods/fabritone-1.5.3.jar
-COPY --from=headlessapi-build /srv/headlessmcgit/headless-api-mod/build/libs/headless-api-1.0.0.jar /srv/mods/headless-api-1.0.0.jar
-COPY setup /srv/setup
 
 RUN apt-get update -y && \
     apt-get install --no-install-recommends xvfb -y && \
@@ -29,14 +18,17 @@ RUN apt-get update -y && \
 ENV USERNAME="username" \
     PASSWORD="password"
 
+COPY "setup" "/srv/setup"
+COPY --from=baritone-build "/srv/baritone/build/libs/baritone-api-1.5.3.jar" "/srv/baritone-standalone-1.5.3.jar"
+
 ENTRYPOINT Xvfb :5 -screen 0 100x100x24 \
     & export DISPLAY=:5; \
-    /srv/setup/setup.sh; \
+    "/srv/setup/setup.sh"; \
     minecraft-launcher-cmd \
-    --version "fabric-1.15.2" \
+    --version "1.15.2-Baritone" \
     --resolutionWidth 10 \
     --resolutionHeight 10 --username "$USERNAME" \
-    --minecraftDir /srv/minecraft \
-    --gameDir /srv/instance \
+    --minecraftDir "/srv/minecraft" \
+    --gameDir "/srv/instance" \
     --password "$PASSWORD" \
     --jvmArguments="-Xms512M -Xmx1024M"

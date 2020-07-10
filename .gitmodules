@@ -1,4 +1,5 @@
-[submodule "fabritone"]
-	path = fabritone
-	url = https://git.wnuke.dev/external-imports/fabritone.git
-	branch = fabritone/1.15.x-Fabric
+
+[submodule "baritone"]
+	path = baritone
+	url = git@git.wnuke.dev:wnuke/baritone.git
+	branch = 1.15.2-headless-api
