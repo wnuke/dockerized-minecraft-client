@@ -11,7 +11,7 @@
   "arguments": {
     "game": [
       "--tweakClass",
-      "baritone.launch.BaritoneTweaker"
+      "dev.wnuke.mchttpapi.LaunchTweaker"
     ]
   },
   "libraries": [
@@ -19,7 +19,7 @@
       "name": "net.minecraft:launchwrapper:1.12"
     },
     {
-      "name": "cabaletta:baritone-api:1.5.3"
+      "name": "dev.wnuke:mchttpapi:1.0.0"
     },
     {
       "name": "com.github.ImpactDevelopment:SimpleTweaker:1.2"

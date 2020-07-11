@@ -5,6 +5,13 @@ COPY "baritone" "/srv/baritone"
 WORKDIR "/srv/baritone"
 RUN sh gradlew build
 
+FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as mchttpapi-build
+
+COPY "mc-http-api" "/srv/mc-http-api"
+
+WORKDIR "/srv/mc-http-api"
+RUN sh gradlew build
+
 
 FROM adoptopenjdk:8u252-b09-jdk-hotspot-bionic
 
@@ -17,6 +24,7 @@ RUN apt-get update -y && \
 
 COPY "setup" "/srv/setup"
 COPY --from=baritone-build "/srv/baritone/build/libs/baritone-api-1.5.3.jar" "/srv/baritone-api-1.5.3.jar"
+COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-1.0.0.jar" "/srv/mchttpapi-1.0.0.jar"
 
 ENV USERNAME="username" \
     PASSWORD="password"
