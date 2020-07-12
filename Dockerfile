@@ -1,13 +1,14 @@
-FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as baritone-build
+#FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as baritone-build
 
-COPY "baritone" "/srv/baritone"
+#COPY "baritone" "/srv/baritone"
 
-WORKDIR "/srv/baritone"
-RUN sh gradlew build
+#WORKDIR "/srv/baritone"
+#RUN sh gradlew build
 
 FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as mchttpapi-build
 
-COPY "mc-http-api" "/srv/mc-http-api"
+COPY "gradle" "srv/mc-http-api/gradle"
+COPY "build.gradle" "settings.gradle" "gradlew" "/srv/mc-http-api"/
 
 WORKDIR "/srv/mc-http-api"
 RUN sh gradlew build
@@ -23,20 +24,16 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 COPY "setup" "/srv/setup"
-COPY --from=baritone-build "/srv/baritone/build/libs/baritone-api-1.5.3.jar" "/srv/baritone-api-1.5.3.jar"
+#COPY --from=baritone-build "/srv/baritone/build/libs/baritone-api-1.5.3.jar" "/srv/baritone-api-1.5.3.jar"
 COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-1.0.0.jar" "/srv/mchttpapi-1.0.0.jar"
 
 ENV USERNAME="username" \
     PASSWORD="password"
 
-ENTRYPOINT "/srv/setup/setup.sh"; \
-    Xvfb :5 -screen 0 100x100x24 \
+ENTRYPOINT rm /tmp/.X5-lock \
+    & Xvfb :5 -screen 0 100x100x24 \
     & export DISPLAY=:5; \
-    minecraft-launcher-cmd \
-    --version "1.15.2-Baritone" \
-    --resolutionWidth 10 \
-    --resolutionHeight 10 --username "$USERNAME" \
-    --minecraftDir "/srv/minecraft" \
-    --gameDir "/srv/instance" \
-    --password "$PASSWORD" \
-    --jvmArguments="-Xms512M -Xmx1024M"
+    if sh /srv/setup/start.sh; \
+    then echo "Minecraft launched successfully." \
+    else sh /srv/setup/setup.sh \
+    & sh /srv/setup/start.sh; fi

@@ -20,7 +20,7 @@ Content-Type: application/json
 ###
 
 # curl "localhost:8000/status"
-GET localhost:8000/status
+GET http://localhost:8000/status
 Accept: application/json
 
 <> 2020-07-10T045404.200.json
@@ -28,7 +28,7 @@ Accept: application/json
 ###
 
 # curl "localhost:8000/player"
-GET localhost:8000/player
+GET http://localhost:8000/player
 Accept: application/json
 
 ###
