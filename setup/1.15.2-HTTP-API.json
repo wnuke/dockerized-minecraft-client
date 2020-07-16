@@ -7,16 +7,15 @@
   "releaseTime": "2019-07-23T20:50:21Z",
   "downloads": {},
   "minimumLauncherVersion": 0,
-  "mainClass": "net.minecraft.launchwrapper.Launch",
+  "mainClass": "cpw.mods.modlauncher.Launcher",
   "arguments": {
     "game": [
-      "--tweakClass",
-      "dev.wnuke.mchttpapi.LaunchTweaker"
+      "--launchTarget Main"
     ]
   },
   "libraries": [
     {
-      "name": "net.minecraft:launchwrapper:1.12"
+      "name": "cpw.mods:modlauncher:ver"
     },
     {
       "name": "dev.wnuke:mchttpapi:1.0.0"
