@@ -7,4 +7,4 @@ minecraft-launcher-cmd \
     --gameDir="/srv/instance" \
     --username="$USERNAME" \
     --password="$PASSWORD" \
-    --version="1.15.2-HTTP-API"
+    --version="fabric-1.16"

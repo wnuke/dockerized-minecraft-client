@@ -1,7 +1,7 @@
-[submodule "baritone"]
-	path = baritone
-	url = git@git.wnuke.dev:wnuke/baritone.git
-	branch = 1.15.2-headless-api
 [submodule "mc-http-api"]
 	path = mc-http-api
 	url = git@git.wnuke.dev:wnuke/mc-http-api.git
+[submodule "fabritone"]
+	path = fabritone
+	url = git@git.wnuke.dev:external-imports/fabritone.git
+	branch = fabritone/1.16.x-Fabric
