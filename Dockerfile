@@ -23,7 +23,7 @@ COPY --from=iamjohnnym/bionic-python:3.7 / /
 
 RUN apt-get update -y && \
     apt-get install --no-install-recommends xvfb -y && \
-    pip3 install minecraft-launcher-cmd requests && \
+    pip3 install minecraft-launcher-lib requests && \
     rm -rf /var/lib/apt/lists/*
 
 COPY "setup" "/srv/setup"
@@ -36,7 +36,4 @@ ENV USERNAME="username" \
 ENTRYPOINT rm /tmp/.X5-lock \
     & Xvfb :5 -screen 0 100x100x24 \
     & export DISPLAY=:5; \
-    if sh /srv/setup/start.sh; \
-    then echo "Minecraft launched successfully." \
-    else sh /srv/setup/setup.sh \
-    & sh /srv/setup/start.sh; fi
+    bash /srv/setup/start.sh
