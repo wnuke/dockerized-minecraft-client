@@ -1,16 +1,19 @@
 FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as faritone-build
 
-COPY "faritone" "/srv/faritone"
+COPY "fabritone" "/srv/fabritone"
 
-WORKDIR "/srv/faritone"
+WORKDIR "/srv/fabritone"
 RUN sh gradlew build
 
 FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as mchttpapi-build
 
-COPY "gradle" "srv/mc-http-api/gradle"
-COPY "build.gradle" "settings.gradle" "gradlew" "/srv/mc-http-api"/
-
 WORKDIR "/srv/mc-http-api"
+COPY "mc-http-api/gradle" "/srv/mc-http-api/gradle"
+COPY "mc-http-api/build.gradle" "mc-http-api/settings.gradle" "mc-http-api/gradle.properties" "mc-http-api/gradlew" "/srv/mc-http-api"/
+
+RUN sh gradlew build
+
+COPY "mc-http-api/src" "/srv/mc-http-api/src"
 RUN sh gradlew build
 
 
@@ -24,7 +27,7 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 COPY "setup" "/srv/setup"
-COPY --from=faritone-build "/srv/faritone/build/libs/fabritone-1.5.3.jar" "/srv/fabritone-1.5.3.jar"
+COPY --from=faritone-build "/srv/fabritone/build/libs/fabritone-1.5.3.jar" "/srv/fabritone-1.5.3.jar"
 COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-1.0.0.jar" "/srv/mchttpapi-1.0.0.jar"
 
 ENV USERNAME="username" \
