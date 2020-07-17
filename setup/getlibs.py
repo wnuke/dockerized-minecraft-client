@@ -10,7 +10,7 @@ with open(sys.argv[1], 'r') as file:
 libraries = json.loads(data)['libraries']
 
 for library in libraries:
-    if library['url'] != '' & library['name'] != '':
+    if (library['url'] != '') & (library['name'] != ''):
         librarySplit = library['name'].split(':')
         libraryPath = librarySplit[0].replace('.', '/') + '/' + librarySplit[1] + '/' + librarySplit[2] + '/'
         libraryFileName = librarySplit[1] + '-' + librarySplit[2] + '.jar'

@@ -10,6 +10,10 @@ parser.add_argument("--password",help="Your mojang password")
 parser.add_argument("--version",default=minecraft_launcher_lib.utils.get_latest_version()["release"],help="The Minecraft version")
 args = parser.parse_args().__dict__
 
+print("Downloading Minecraft...")
+minecraft_launcher_lib.install.install_minecraft_version(args["version"],'/srv/minecraft',callback={"setStatus":print})
+print("Minecraft downloaded.")
+
 if args["password"]:
     login_data = minecraft_launcher_lib.account.login_user(args["username"],args["password"])
 
