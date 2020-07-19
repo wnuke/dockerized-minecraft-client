@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+  mcbot0:
+    build: .
+    image: dockermc:latest
+    container_name: mcbot0
+    volumes:
+      - /opt/mcdocker/minecraft:/srv/minecraft
+      - /opt/mcdocker/bot0:/srv/instance
+    deploy:
+      mode: global
+    ports:
+      - "8000:8000"
+  mcbot1:
+    build: .
+    image: dockermc:latest
+    container_name: mcbot1
+    volumes:
+      - /opt/mcdocker/minecraft:/srv/minecraft
+      - /opt/mcdocker/bot1:/srv/instance
+    deploy:
+      mode: global
+    ports:
+      - "8001:8000"
+  mcbot2:
+    build: .
+    image: dockermc:latest
+    container_name: mcbot2
+    volumes:
+      - /opt/mcdocker/minecraft:/srv/minecraft
+      - /opt/mcdocker/bot2:/srv/instance
+    deploy:
+      mode: global
+    ports:
+      - "8002:8000"
+  mcbot3:
+    build: .
+    image: dockermc:latest
+    container_name: mcbot3
+    volumes:
+      - /opt/mcdocker/minecraft:/srv/minecraft
+      - /opt/mcdocker/bot3:/srv/instance
+    deploy:
+      mode: global
+    ports:
+      - "8003:8000"

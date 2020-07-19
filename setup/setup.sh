@@ -4,8 +4,6 @@ export BASEVER=$BASEVER
 export INSTDIR=$INSTDIR
 export SETUPDIR=$SETUPDIR
 export PORT=$PORT
-export USERNAME=$USERNAME
-export PASSWORD=$PASSWORD
 
 if [ -z "$GAMEDIR" ]
 then
@@ -30,14 +28,6 @@ fi
 if [ -z "$PORT" ]
 then
       PORT="8000"
-fi
-if [ -z "$USERNAME" ]
-then
-      USERNAME="test"
-fi
-if [ -z "$PASSWORD" ]
-then
-      PASSWORD=""
 fi
 
 echo "Downloading libraries..."
@@ -75,8 +65,6 @@ echo "Mods installed."
 echo "Launching Minecraft..."
 cd $INSTDIR && \
   python3 $SETUPDIR/launch_mc.py \
-    --username="$USERNAME" \
-    --password="$PASSWORD" \
     --version=$GAMEVER \
     --gamedir=$GAMEDIR \
     --instdir=$INSTDIR \

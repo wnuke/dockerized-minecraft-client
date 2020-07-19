@@ -30,10 +30,7 @@ COPY "setup" "/srv/setup"
 COPY --from=faritone-build "/srv/fabritone/build/libs/fabritone-1.5.3.jar" "/srv/setup/fabritone-1.5.3.jar"
 COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-1.0.0.jar" "/srv/setup/mchttpapi-1.0.0.jar"
 
-ENV USERNAME="username" \
-    PASSWORD="password" \
-    PORT="8000" \
-    GAMEDIR="/srv/minecraft" \
+ENV GAMEDIR="/srv/minecraft" \
     INSTDIR="/srv/instance" \
     SETUPDIR="/srv/setup" \
     GAMEVER="fabric-1.16" \
