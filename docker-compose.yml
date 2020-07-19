@@ -48,3 +48,6 @@ services:
       mode: global
     ports:
       - "8003:8000"
+volumes:
+  minecraft:
+    external: true
