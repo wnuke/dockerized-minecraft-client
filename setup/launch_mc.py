@@ -34,9 +34,9 @@ else:
 
 if logged_in == "false":
     print("Could not authenticate with Mojang, using offline mode instead...")
-    userid = uuid.uuid4()
+    userid = str(uuid.uuid4())
     username = args["username"]
-    usertoken = '0'
+    usertoken = "0"
 
 options = {
     "username": username,
