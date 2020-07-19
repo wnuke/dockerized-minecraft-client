@@ -1,7 +1,7 @@
 [submodule "mc-http-api"]
-	path = mc-http-api
+	path = setup/mc-http-api
 	url = git@git.wnuke.dev:wnuke/mc-http-api.git
 [submodule "fabritone"]
-	path = fabritone
+	path = setup/fabritone
 	url = git@git.wnuke.dev:external-imports/fabritone.git
 	branch = fabritone/1.16.x-Fabric
