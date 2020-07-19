@@ -8,7 +8,7 @@ renderDistance:2
 entityDistanceScaling:5.0
 guiScale:3
 particles:0
-maxFps:1
+maxFps:20
 difficulty:3
 graphicsMode:0
 ao:0
@@ -22,3 +22,4 @@ mipmapLevels:0
 useNativeTransport:true
 skipMultiplayerWarning:true
 syncChunkWrites:false
+soundCategory_master:0.0
