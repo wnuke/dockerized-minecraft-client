@@ -4,11 +4,11 @@ chatLinks:true
 enableVsync:false
 entityShadows:false
 bobView:false
-renderDistance:3
+renderDistance:2
 entityDistanceScaling:5.0
 guiScale:3
 particles:0
-maxFps:10
+maxFps:1
 difficulty:3
 graphicsMode:0
 ao:0

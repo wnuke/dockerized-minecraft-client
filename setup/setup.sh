@@ -1,21 +1,65 @@
-echo "Installing libraries..."
-mkdir -p /srv/minecraft/versions/fabric-1.16
-cp /srv/setup/fabric-1.16.json /srv/minecraft/versions/fabric-1.16/fabric-1.16.json
-mkdir -p /srv/minecraft/libraries
-python3 /srv/setup/getlibs.py /srv/minecraft/versions/fabric-1.16/fabric-1.16.json /srv/minecraft/libraries/
-echo "Libraries installed."
+export GAMEDIR=$GAMEDIR
+export GAMEVER=$GAMEVER
+export INSTDIR=$INSTDIR
+export SETUPDIR=$SETUPDIR
+export PORT=$PORT
+
+if [ -z "$GAMEDIR" ]
+then
+      GAMEDIR="/srv/minecraft"
+fi
+if [ -z "$GAMEVER" ]
+then
+      GAMEDIR="/srv/minecraft"
+fi
+if [ -z "$INSTDIR" ]
+then
+      INSTDIR="/srv/instance"
+fi
+if [ -z "$SETUPDIR" ]
+then
+      SETUPDIR="/srv/setup"
+fi
+if [ -z "$PORT" ]
+then
+      PORT="8000"
+fi
+
+echo "Downloading libraries..."
+mkdir -p $GAMEDIR/versions/$GAMEVER
+cp $SETUPDIR/$GAMEVER.json $GAMEDIR/versions/$GAMEVER/$GAMEVER.json
+mkdir -p $GAMEDIR/libraries
+python3 $SETUPDIR/getlibs.py $GAMEDIR/versions/$GAMEVER/$GAMEVER.json /srv/minecraft/libraries/
+echo "Libraries downloaded."
+
+echo "Downloading Minecraft..."
+python3 $SETUPDIR/download_mc.py \
+    --version=$GAMEVER \
+    --directory=$GAMEDIR
+echo "Minecraft downloaded."
 
 echo "Installing config..."
-mkdir /srv/instance
-cp /srv/setup/options.txt /srv/instance/options.txt
-cp /srv/setup/APIconfig.json /srv/instance/APIconfig.json
+mkdir $INSTDIR
+cp $SETUPDIR/options.txt $INSTDIR/options.txt
+cp $SETUPDIR/APIconfig.json $INSTDIR/APIconfig.json
 echo "Config installed..."
 
 echo "Installing mods..."
-mkdir -p /srv/instance/mods
-cp /srv/mchttpapi-1.0.0.jar /srv/instance/mods/mchttpapi-1.0.0.jar &&
+mkdir -p $INSTDIR/mods
+cp /srv/mchttpapi-1.0.0.jar $INSTDIR/mods/mchttpapi-1.0.0.jar && \
   echo "HTTP-API installed."
 
-cp /srv/fabritone-1.5.3.jar /srv/instance/mods/fabritone-1.5.3.jar &&
-  echo "Fabritone installed."
+#cp /srv/fabritone-1.5.3.jar $INSTDIR/mods/fabritone-1.5.3.jar && \
+#  echo "Fabritone installed."
 echo "Mods installed."
+
+echo "Launching Minecraft..."
+cd $INSTDIR && \
+  python3 $SETUPDIR/launch_mc.py \
+    --username="$USERNAME" \
+    --password="$PASSWORD" \
+    --version=$GAMEVER \
+    --gamedir=$GAMEDIR \
+    --instdir=$INSTDIR \
+    --port="$PORT" && \
+  echo "Minecraft stopped." && exit

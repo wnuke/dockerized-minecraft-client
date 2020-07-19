@@ -31,9 +31,14 @@ COPY --from=faritone-build "/srv/fabritone/build/libs/fabritone-1.5.3.jar" "/srv
 COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-1.0.0.jar" "/srv/mchttpapi-1.0.0.jar"
 
 ENV USERNAME="username" \
-    PASSWORD="password"
+    PASSWORD="password" \
+    PORT="8000" \
+    GAMEDIR="/srv/minecraft" \
+    INSTDIR="/srv/instance" \
+    SETUPDIR="/srv/setup" \
+    GAMEVER="fabric-1.16"
 
 ENTRYPOINT rm /tmp/.X5-lock \
     & Xvfb :5 -screen 0 100x100x24 \
     & export DISPLAY=:5; \
-    bash /srv/setup/start.sh
+    bash /srv/setup/setup.sh
