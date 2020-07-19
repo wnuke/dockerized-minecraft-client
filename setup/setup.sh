@@ -49,8 +49,8 @@ mkdir -p $INSTDIR/mods
 cp $SETUPDIR/mchttpapi-1.0.0.jar $INSTDIR/mods/mchttpapi-1.0.0.jar && \
   echo "HTTP-API installed."
 
-#cp $SETUPDIR/fabritone-1.5.3.jar $INSTDIR/mods/fabritone-1.5.3.jar && \
-#  echo "Fabritone installed."
+cp $SETUPDIR/fabritone-1.5.3.jar $INSTDIR/mods/fabritone-1.5.3.jar && \
+  echo "Fabritone installed."
 echo "Mods installed."
 
 echo "Launching Minecraft..."
