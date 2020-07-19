@@ -3,6 +3,8 @@ export GAMEVER=$GAMEVER
 export INSTDIR=$INSTDIR
 export SETUPDIR=$SETUPDIR
 export PORT=$PORT
+export USERNAME=$USERNAME
+export PASSWORD=$PASSWORD
 
 if [ -z "$GAMEDIR" ]
 then
@@ -23,6 +25,14 @@ fi
 if [ -z "$PORT" ]
 then
       PORT="8000"
+fi
+if [ -z "$USERNAME" ]
+then
+      USERNAME="test"
+fi
+if [ -z "$PASSWORD" ]
+then
+      PASSWORD=""
 fi
 
 echo "Downloading libraries..."
