@@ -27,8 +27,8 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 COPY "setup" "/srv/setup"
-COPY --from=faritone-build "/srv/fabritone/build/libs/fabritone-1.5.3.jar" "/srv/fabritone-1.5.3.jar"
-COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-1.0.0.jar" "/srv/mchttpapi-1.0.0.jar"
+COPY --from=faritone-build "/srv/fabritone/build/libs/fabritone-1.5.3.jar" "/srv/setup/fabritone-1.5.3.jar"
+COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-1.0.0.jar" "/srv/setup/mchttpapi-1.0.0.jar"
 
 ENV USERNAME="username" \
     PASSWORD="password" \

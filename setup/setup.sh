@@ -29,7 +29,7 @@ echo "Downloading libraries..."
 mkdir -p $GAMEDIR/versions/$GAMEVER
 cp $SETUPDIR/$GAMEVER.json $GAMEDIR/versions/$GAMEVER/$GAMEVER.json
 mkdir -p $GAMEDIR/libraries
-python3 $SETUPDIR/getlibs.py $GAMEDIR/versions/$GAMEVER/$GAMEVER.json /srv/minecraft/libraries/
+python3 $SETUPDIR/getlibs.py $GAMEDIR/versions/$GAMEVER/$GAMEVER.json $GAMEDIR/libraries/
 echo "Libraries downloaded."
 
 echo "Downloading Minecraft..."
@@ -46,10 +46,10 @@ echo "Config installed..."
 
 echo "Installing mods..."
 mkdir -p $INSTDIR/mods
-cp /srv/mchttpapi-1.0.0.jar $INSTDIR/mods/mchttpapi-1.0.0.jar && \
+cp $SETUPDIR/mchttpapi-1.0.0.jar $INSTDIR/mods/mchttpapi-1.0.0.jar && \
   echo "HTTP-API installed."
 
-#cp /srv/fabritone-1.5.3.jar $INSTDIR/mods/fabritone-1.5.3.jar && \
+#cp $SETUPDIR/fabritone-1.5.3.jar $INSTDIR/mods/fabritone-1.5.3.jar && \
 #  echo "Fabritone installed."
 echo "Mods installed."
 
