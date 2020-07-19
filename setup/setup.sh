@@ -51,6 +51,10 @@ echo "Downloading Minecraft..."
 python3 $SETUPDIR/download_mc.py \
     --version=$BASEVER \
     --directory=$GAMEDIR
+python3 $SETUPDIR/download_mc.py \
+    --version=$GAMEVER \
+    --directory=$GAMEDIR
+cp $GAMEDIR/versions/$BASEVER/$BASEVER.jar $GAMEDIR/versions/$GAMEVER/$GAMEVER.jar
 echo "Minecraft downloaded."
 
 echo "Installing config..."
