@@ -1,5 +1,6 @@
 export GAMEDIR=$GAMEDIR
 export GAMEVER=$GAMEVER
+export BASEVER=$BASEVER
 export INSTDIR=$INSTDIR
 export SETUPDIR=$SETUPDIR
 export PORT=$PORT
@@ -13,6 +14,10 @@ fi
 if [ -z "$GAMEVER" ]
 then
       GAMEDIR="/srv/minecraft"
+fi
+if [ -z "$BASEVER" ]
+then
+      BASEVER="1.16.1"
 fi
 if [ -z "$INSTDIR" ]
 then
@@ -44,7 +49,7 @@ echo "Libraries downloaded."
 
 echo "Downloading Minecraft..."
 python3 $SETUPDIR/download_mc.py \
-    --version=$GAMEVER \
+    --version=$BASEVER \
     --directory=$GAMEDIR
 echo "Minecraft downloaded."
 

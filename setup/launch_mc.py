@@ -20,15 +20,23 @@ username = ''
 userid = ''
 usertoken = ''
 
-if "errorMessage" in login_data:
-    print(login_data["errorMessage"])
+logged_in = "true"
+
+try:
+    login_data
+except NameError:
+    logged_in = "false"
+else:
+    if not("errorMessage" in login_data):
+        userid = login_data['selectedProfile']['id']
+        username = login_data['selectedProfile']['name']
+        usertoken = login_data['accessToken']
+
+if logged_in == "false":
+    print("Could not authenticate with Mojang, using offline mode instead...")
     userid = uuid.uuid4()
     username = args["username"]
     usertoken = '0'
-else:
-    userid = login_data['selectedProfile']['id']
-    username = login_data['selectedProfile']['name']
-    usertoken = login_data['accessToken']
 
 options = {
     "username": username,

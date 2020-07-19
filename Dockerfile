@@ -36,7 +36,8 @@ ENV USERNAME="username" \
     GAMEDIR="/srv/minecraft" \
     INSTDIR="/srv/instance" \
     SETUPDIR="/srv/setup" \
-    GAMEVER="fabric-1.16"
+    GAMEVER="fabric-1.16" \
+    BASEVER="1.16.1"
 
 ENTRYPOINT rm /tmp/.X5-lock \
     & Xvfb :5 -screen 0 100x100x24 \
