@@ -1,53 +1,14 @@
 version: '3.8'
 services:
-  mcbot0:
-    build:
-      context: ./bot
-      dockerfile: ./bot/Dockerfile
+  mcbot:
     image: dockermcbot:latest
-    container_name: mcbot0
     volumes:
       - minecraft:/srv/minecraft
     deploy:
-      mode: global
+      mode: replicated
+      replicas: 10
     ports:
-      - "8000:8000"
-  mcbot1:
-    build:
-      context: ./bot
-      dockerfile: ./bot/Dockerfile
-    image: dockermcbot:latest
-    container_name: mcbot1
-    volumes:
-      - minecraft:/srv/minecraft
-    deploy:
-      mode: global
-    ports:
-      - "8001:8000"
-  mcbot2:
-    build:
-      context: ./bot
-      dockerfile: ./bot/Dockerfile
-    image: dockermcbot:latest
-    container_name: mcbot2
-    volumes:
-      - minecraft:/srv/minecraft
-    deploy:
-      mode: global
-    ports:
-      - "8002:8000"
-  mcbot3:
-    build:
-      context: ./bot
-      dockerfile: ./bot/Dockerfile
-    image: dockermcbot:latest
-    container_name: mcbot3
-    volumes:
-      - minecraft:/srv/minecraft
-    deploy:
-      mode: global
-    ports:
-      - "8003:8000"
+      - 8000-8010:8000
 volumes:
   minecraft:
     external: true

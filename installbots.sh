@@ -10,7 +10,7 @@ git submodule update --init && \
   docker build . -t dockermcinstall:latest && \
   docker volume create minecraft && \
   docker run -v minecraft:/srv/minecraft dockermcinstall:latest && \
-  cd ../bot || (echo "Bot directory does not exist, exiting..." && exit);
+  cd ../bot || (echo "Bot directory does not exist, exiting..." && exit); \
   docker build . -t dockermcbot:latest && \
   cd .. && \
   docker-compose up
