@@ -10,8 +10,7 @@ RUN apt-get update -y && \
 ENV GAMEVER="fabric-1.16" \
     BASEVER="1.16.1"
 
-COPY launch_mc.py /srv/launch_mc.py
-COPY start.sh /srv/start.sh
+COPY launch_mc.py start.sh /srv/
 
 ENTRYPOINT rm /tmp/.X5-lock \
     & Xvfb :5 -screen 0 100x100x24 \
