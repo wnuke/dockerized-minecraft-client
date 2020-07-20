@@ -16,22 +16,22 @@ BOTCOMPTEMPLATE='  BOTNAME:
 
 git submodule update --init && \
   cd setup || (echo "Setup directory does not exist, exiting..." && exit); \
-  docker build . -t dockermcinstall:latest && \
-  docker volume create minecraft && \
-  docker run -v minecraft:/srv/minecraft dockermcinstall:latest && \
+  #docker build . -t dockermcinstall:latest && \
+  #docker volume create minecraft && \
+  #docker run -v minecraft:/srv/minecraft dockermcinstall:latest && \
   cd ../bot || (echo "Bot directory does not exist, exiting..." && exit); \
-  docker build . -t dockermcbot:latest && \
+  #docker build . -t dockermcbot:latest && \
   cd .. && \
   PORT=10000
   rm docker-compose.yml
-  echo 'version: '3'
+  echo 'version: "3"
 services:' >> docker-compose.yml
   for i in $(seq 0 $NUMBEROFBOTS);
   do
   PORT=$((PORT + 1))
   BOTCOMP=${BOTCOMPTEMPLATE//BOTNAME/mcbot$i}
   BOTCOMP=${BOTCOMP//BOTPORT/$PORT}
-  echo $BOTCOMP >> docker-compose.yml
+  echo "$BOTCOMP" >> docker-compose.yml
   done && \
   echo 'volumes:
   minecraft:
