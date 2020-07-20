@@ -5,16 +5,14 @@ if [ -z $NUMBEROFBOTS ]; then
   NUMBEROFBOTS=1
 fi
 
-BOTCOMPTEMPLATE='
-  BOTNAME:
+BOTCOMPTEMPLATE='  BOTNAME:
     image: dockermcbot:latest
     volumes:
       - minecraft:/srv/minecraft
     deploy:
       mode: global
     ports:
-      - BOTPORT:8000
-'
+      - BOTPORT:8000'
 
 git submodule update --init && \
   cd setup || (echo "Setup directory does not exist, exiting..." && exit); \
@@ -25,7 +23,9 @@ git submodule update --init && \
   docker build . -t dockermcbot:latest && \
   cd .. && \
   PORT=10000
-  cat docker-compose-template.yml > docker-compose.yml
+  rm docker-compose.yml
+  echo 'version: '3'
+services:' >> docker-compose.yml
   for i in $(seq 0 $NUMBEROFBOTS);
   do
   PORT=$((PORT + 1))
@@ -33,8 +33,7 @@ git submodule update --init && \
   BOTCOMP=${BOTCOMP//BOTPORT/$PORT}
   echo $BOTCOMP >> docker-compose.yml
   done && \
-  echo '
-volumes:
+  echo 'volumes:
   minecraft:
     external: true' >> docker-compose.yml && \
   docker-compose up
