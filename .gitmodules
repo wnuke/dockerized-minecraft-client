@@ -6,3 +6,6 @@
 	path = bot/mc-http-api
 	url = git@git.wnuke.dev:wnuke/mc-http-api
 	branch = master
+[submodule "bot/fabritone"]
+	path = bot/fabritone
+	url = git@git.wnuke.dev:external-imports/fabritone.git

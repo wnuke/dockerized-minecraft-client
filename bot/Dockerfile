@@ -38,8 +38,6 @@ COPY --from=faritone-build "/srv/fabritone/build/libs/fabritone-1.5.3.jar" "/srv
 COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-1.0.0.jar" "/srv/instance/mods/mchttpapi-1.0.0.jar"
 COPY options.txt /srv/instance
 
-COPY launch_mc.py start.sh /srv/
-
 FROM adoptopenjdk:8u252-b09-jdk-hotspot-bionic
 
 COPY --from=python:3.8-slim / /
