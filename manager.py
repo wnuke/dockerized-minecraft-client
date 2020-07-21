@@ -80,7 +80,6 @@ default_bot_address = 'http://localhost:'
 
 class MyPrompt(Cmd):
     prompt = 'bot-manager > '
-    intro = "Welcome! Type ? to list commands"
 
     def do_exit(self, inp):
         cleanup()
@@ -103,7 +102,7 @@ class MyPrompt(Cmd):
         print("Creates a single instance of the bot, with username and password as optional arguments.")
 
     def do_madd(self, inp):
-        if len(inp) > 0 or not (inp.isnumeric()):
+        if not (len(inp) < 1 or not (inp.isnumeric())):
             for i in range(int(inp)):
                 create_instance([])
 
@@ -119,7 +118,7 @@ class MyPrompt(Cmd):
         print("Lists all instances of the bot.")
 
     def do_del(self, inp):
-        if len(inp) > 0 or not (inp.isnumeric()):
+        if len(inp) < 1 or not (inp.isnumeric()):
             found = False
             for i in instances:
                 if i[3] == int(inp):
@@ -152,7 +151,7 @@ class MyPrompt(Cmd):
 
     def do_message(self, inp):
         args = inp.split(" ", 1)
-        if (len(args) > 1) and (
+        if (len(args) < 2) and (
                 (len(args[0]) > 0 or not (args[0].isnumeric())) and len(args[1]) > 0):
             print("Requires one numeric argument followed by strings.")
         else:
@@ -166,7 +165,7 @@ class MyPrompt(Cmd):
 
     def do_mmessage(self, inp):
         args = inp.split(" ", 1)
-        if (len(args) > 1) and (
+        if (len(args) < 2) and (
                 (len(args[0]) > 0 or not (args[0].isnumeric())) and (
                 len(args[1]) > 0 or not (args[1].isnumeric())) and len(args[2]) > 0):
             print("Requires two numeric arguments followed by strings.")
@@ -181,7 +180,7 @@ class MyPrompt(Cmd):
 
     def do_connect(self, inp):
         args = inp.split(" ")
-        if (len(args) > 1) and (
+        if (len(args) < 2) and (
                 (len(args[0]) > 0 or not (args[0].isnumeric())) and len(args[1]) > 0):
             print("Requires one numeric argument followed by a string optionally followed by a numeric argument.")
         else:
@@ -198,7 +197,7 @@ class MyPrompt(Cmd):
 
     def do_mconnect(self, inp):
         args = inp.split(" ")
-        if (len(args) > 1) and (
+        if (len(args) < 3) and (
                 (len(args[0]) > 0 or not (args[0].isnumeric())) and len(args[1]) > 0 or not (
                 args[1].isnumeric()) and len(args[2]) > 0):
             print("Requires two numeric arguments followed by a string optionally followed by a numeric argument.")
@@ -226,13 +225,24 @@ class MyPrompt(Cmd):
         print("Deletes all stopped instances of the bot.")
 
 
+def main():
+    try:
+        MyPrompt().cmdloop()
+    except ValueError:
+        print("Invalid argument.")
+    except IndexError:
+        print("Not enough arguments.")
+    main()
+
+
 try:
-    MyPrompt().cmdloop()
+    print("Welcome! ? to list commands.")
+    main()
 except KeyboardInterrupt:
     print("Keyboard interrupt...")
     cleanup()
     print("Cleanup done, exiting...")
-    sys.exit(0)
 except Exception:
     traceback.print_exc(file=sys.stdout)
-sys.exit(0)
+    cleanup()
+    sys.exit(0)
