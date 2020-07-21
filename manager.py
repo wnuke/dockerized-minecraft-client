@@ -67,12 +67,12 @@ def cleanup():
     client.close()
 
 
-def send_message(botaddress, message, port):
-    requests.post(botaddress + str(port) + "/sendmsg", json={'message': str(message)})
+def send_message(botaddress, botport, message):
+    requests.post(botaddress + str(botport) + "/sendmsg", json={'message': str(message)})
 
 
-def connect_to_server(botaddress, address, port):
-    requests.post(botaddress + str(port) + "/connect", json={'address': str(address), 'port': str(port)})
+def connect_to_server(botaddress, botport, address, port):
+    requests.post(botaddress + str(botport) + "/connect", json={'address': str(address), 'port': str(port)})
 
 
 default_bot_address = 'http://localhost:'
@@ -158,7 +158,7 @@ class MyPrompt(Cmd):
             for i in instances:
                 if i[3] == int(args[0]):
                     print("sending \"" + args[1] + "\" from instance #" + str(i[3]))
-                    send_message(default_bot_address, args[1], 10000 + i[3])
+                    send_message(default_bot_address, 10000 + i[3], args[1])
 
     def help_message(self):
         print("Tells an instance of the bot to type a message in the chat box and press enter.")
@@ -173,7 +173,7 @@ class MyPrompt(Cmd):
             for i in instances:
                 if i[3] in range(int(args[0]), int(args[1])):
                     print("sending from instance #" + str(i[3]))
-                    send_message(default_bot_address, args[2], 10000 + i[3])
+                    send_message(default_bot_address, 10000 + i[3], args[2])
 
     def help_mmessage(self):
         print("Tells all instances of the bot in a range of ids to type a message in the chat box and press enter.")
@@ -190,7 +190,7 @@ class MyPrompt(Cmd):
             for i in instances:
                 if i[3] == int(args[0]):
                     print("connecting instance #" + str(i[3]) + " to " + args[1] + ":" + port)
-                    connect_to_server(default_bot_address, args[1], port)
+                    connect_to_server(default_bot_address, 10000 + i[3], args[1], port)
 
     def help_connect(self):
         print("Tells an instance of the bot to try to connect to a server.")
@@ -208,7 +208,7 @@ class MyPrompt(Cmd):
             for i in instances:
                 if i[3] in range(int(args[0], args[1])):
                     print("connecting instance #" + str(i[3]) + " to " + args[2] + ":" + port)
-                    connect_to_server(default_bot_address, args[2], port)
+                    connect_to_server(default_bot_address, 10000 + i[3], args[2], port)
 
     def help_mconnect(self):
         print("Tells all instances of the bot in a range of ids to try to connect to a server.")
