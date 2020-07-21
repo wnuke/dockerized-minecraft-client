@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import argparse
 import docker
+import sys
 import timeit
+import traceback
 from cmd import Cmd
 
 parser = argparse.ArgumentParser()
@@ -54,30 +56,53 @@ def remove_instance(instance):
     instances.remove(instance)
 
 
+def cleanup():
+    print("Closing all instances...")
+    for i in instances:
+        print("removing instance #" + str(i[3]) + "...")
+        remove_instance(i)
+    client.close()
+
+
 class MyPrompt(Cmd):
+    prompt = 'bot-manager > '
+    intro = "Welcome! Type ? to list commands"
+
     def do_exit(self, inp):
-        print("Closing all instances...")
-        for i in instances:
-            print("removing instance #" + str(i[3]) + "...")
-            remove_instance(i)
-        client.close()
+        cleanup()
         print("Done, exiting...")
         return True
+
+    def help_exit(self):
+        print("Destroys all instances of the bot and exits.")
 
     def do_build(self, inp):
         build_image()
 
+    def help_build(self):
+        print("Builds the Docker image for the bot.")
+
     def do_add(self, inp):
         create_instance(inp.split(" "))
+
+    def help_add(self):
+        print("Creates a single instance of the bot, with username and password as optional arguments.")
 
     def do_addm(self, inp):
         if len(inp) > 0 or not (inp.isnumeric()):
             for i in range(int(inp)):
                 create_instance([])
 
+    def help_addm(self):
+        print(
+            "Creates a specified number fo instances of the bot, requires the desired number of instances as an argument.")
+
     def do_list(self, inp):
         for i in instances:
             print(instance_string(i))
+
+    def help_list(self):
+        print("Lists all instances of the bot.")
 
     def do_del(self, inp):
         if len(inp) > 0 or not (inp.isnumeric()):
@@ -94,6 +119,23 @@ class MyPrompt(Cmd):
         else:
             print("Requires a numeric argument.")
 
+    def help_del(self):
+        print("Deletes the specified instance of the bot, requires the id of the bot to remove.")
+
+    def do_delm(self, inp):
+        args = inp.split(" ")
+        if len(args) < 2:
+            print("Requires two numeric arguments.")
+        else:
+            if (len(args[0]) > 0 or not (args[0].isnumeric())) and (len(args[1]) > 0 or not (args[1].isnumeric())):
+                for i in instances:
+                    if i[3] in range(int(args[0]), int(args[1])):
+                        print("closing instance #" + str(i[3]))
+                        remove_instance(i)
+
+    def help_delm(self):
+        print("Deletes all bots who's ids are in a given range, requires 2 numbers as arguments.")
+
     def do_prune(self, inp):
         print("Removing failed instances...")
         for i in instances:
@@ -102,5 +144,17 @@ class MyPrompt(Cmd):
                 instances.remove(i[0])
         print("Failed instances removed.")
 
+    def help_prune(self):
+        print("Deletes all stopped instances of the bot.")
 
-MyPrompt().cmdloop()
+
+try:
+    MyPrompt().cmdloop()
+except KeyboardInterrupt:
+    print("Keyboard interrupt...")
+    cleanup()
+    print("Cleanup done, exiting...")
+    sys.exit(0)
+except Exception:
+    traceback.print_exc(file=sys.stdout)
+sys.exit(0)
