@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import docker
+import json
 import requests
 import sys
 import timeit
@@ -24,6 +25,13 @@ def build_image():
     print("Done building images! It took: " + elapsed_time + "s")
 
 
+def create_container(args):
+    return client.containers.run('dockermcbot:latest',
+                                 environment=["USERNAME=" + args[0], "PASSWORD=" + args[1]],
+                                 ports={'8000/tcp': 10000 + len(usedports)},
+                                 hostname="dockermcbotinst-" + str(len(instances)), detach=True)
+
+
 def create_instance(args):
     username = ""
     if len(args) > 0:
@@ -33,11 +41,8 @@ def create_instance(args):
         password = args[1]
     print("Creating another instance of the bot...")
     try:
-        instances.append([client.containers.run('dockermcbot:latest',
-                                                environment=["USERNAME=" + username, "PASSWORD=" + password],
-                                                ports={'8000/tcp': 10000 + len(usedports)},
-                                                hostname="dockermcbotinst-" + str(len(instances)), detach=True),
-                          username, password, len(instances)])
+        instances.append(
+            [create_container([password, username]), username, password, len(instances), default_bot_address, False])
         usedports.append(10000 + len(usedports))
         print("Created another instance of the bot.")
     except docker.errors.APIError:
@@ -60,6 +65,13 @@ def remove_instance(instance):
     instances.remove(instance)
 
 
+def instance_ready(instance):
+    if "[main/INFO]: Created: 256x128x0 minecraft:textures/atlas/mob_effects.png-atlas".encode() in instance[0].logs():
+        return True
+    else:
+        return False
+
+
 def cleanup():
     print("Closing all instances...")
     instances_to_remove = []
@@ -71,12 +83,44 @@ def cleanup():
     client.close()
 
 
-def send_message(botaddress, botport, message):
-    requests.post(botaddress + str(botport) + "/sendmsg", json={'message': str(message)})
+def get_player_stats(instance):
+    return str(requests.get(str(instance[4]) + str(instance[3] + 10000) + "/player"))
 
 
-def connect_to_server(botaddress, botport, address, port):
-    requests.post(botaddress + str(botport) + "/connect", json={'address': str(address), 'port': str(port)})
+def parse_player_stats(stats):
+    if stats == "<Response [200]>":
+        return "Player is null."
+    else:
+        stats_json = json.loads(stats)
+        return stats_json['Username'] + "(" + stats_json["UUID"] + ")" + ":\n  Health: " + str(
+            stats_json["Player"]["Health"]) + " (" + float(
+            stats_json["Player"]["Health"]) / 2 + " hearts)\n  Hunger: " + str(
+            stats_json["Player"]["Hunger"]) + " (" + float(
+            stats_json["Player"]["Hunger"]) / 2 + " bars)\n  XYZ: " + str(
+            stats_json["Coordinates"]["X"]) + " " + str(
+            stats_json["Coordinates"]["Y"]) + " " + str(
+            stats_json["Coordinates"]["Z"]) + "\n"
+
+
+def connect_to_server(instance, address, port):
+    if instance_ready(instance):
+        if not instance[5] and get_player_stats(instance) == "<Response [200]>":
+            requests.post(str(instance[4]) + str(instance[3] + 10000) + "/connect",
+                          json={'address': str(address), 'port': str(port)})
+            instance[5] = True
+            return
+        else:
+            print("Bot is already cor has been onnected.")
+    else:
+        print("Bot not ready.")
+
+
+def send_message(instance, message):
+    if instance_ready(instance) and not get_player_stats(instance) == "<Response [200]>":
+        requests.post(str(instance[4]) + str(instance[3] + 10000) + "/sendmsg",
+                      json={'message': str(message)})
+        return
+    print("Bot not ready.")
 
 
 default_bot_address = 'http://localhost:'
@@ -112,7 +156,8 @@ class MyPrompt(Cmd):
 
     def help_madd(self):
         print(
-            "Creates a specified number fo instances of the bot, requires the desired number of instances as an argument.")
+            "Creates a specified number of instances of the bot, requires the desired number of instances as an "
+            "argument.")
 
     def do_list(self, inp):
         for i in instances:
@@ -121,8 +166,19 @@ class MyPrompt(Cmd):
     def help_list(self):
         print("Lists all instances of the bot.")
 
+    def do_stats(self, inp):
+        if len(inp) > 0 and (inp.isnumeric()):
+            for i in instances:
+                if i[3] == int(inp):
+                    print("instance #" + str(i[3]) + " [" + parse_player_stats(get_player_stats(i)) + "]")
+        else:
+            print("Invalid argument, requires the id of the instance you would like to see the stats of.")
+
+    def help_stats(self):
+        print("Displays stats about the bot's player.")
+
     def do_del(self, inp):
-        if len(inp) < 1 or not (inp.isnumeric()):
+        if len(inp) > 0 and (inp.isnumeric()):
             found = False
             for i in instances:
                 if i[3] == int(inp):
@@ -146,7 +202,7 @@ class MyPrompt(Cmd):
             print("Requires two numeric arguments.")
         else:
             for i in instances:
-                if i[3] in range(int(args[0]), int(args[1])):
+                if i[3] in range(int(args[0]), int(args[1]) + 1):
                     print("closing instance #" + str(i[3]))
                     remove_instance(i)
 
@@ -162,7 +218,7 @@ class MyPrompt(Cmd):
             for i in instances:
                 if i[3] == int(args[0]):
                     print("sending \"" + args[1] + "\" from instance #" + str(i[3]))
-                    send_message(default_bot_address, 10000 + i[3], args[1])
+                    send_message(i, args[1])
 
     def help_message(self):
         print("Tells an instance of the bot to type a message in the chat box and press enter.")
@@ -177,7 +233,7 @@ class MyPrompt(Cmd):
             for i in instances:
                 if i[3] in range(int(args[0]), int(args[1])):
                     print("sending from instance #" + str(i[3]))
-                    send_message(default_bot_address, 10000 + i[3], args[2])
+                    send_message(i, args[2])
 
     def help_mmessage(self):
         print("Tells all instances of the bot in a range of ids to type a message in the chat box and press enter.")
@@ -194,7 +250,7 @@ class MyPrompt(Cmd):
             for i in instances:
                 if i[3] == int(args[0]):
                     print("connecting instance #" + str(i[3]) + " to " + args[1] + ":" + port)
-                    connect_to_server(default_bot_address, 10000 + i[3], args[1], port)
+                    connect_to_server(i, args[1], port)
 
     def help_connect(self):
         print("Tells an instance of the bot to try to connect to a server.")
@@ -210,9 +266,10 @@ class MyPrompt(Cmd):
             if len(args) > 3 and (len(args[3]) > 0 or not (args[3].isnumeric())):
                 port = args[3]
             for i in instances:
-                if i[3] in range(int(args[0]), int(args[1] + 1)):
+                if i[3] in range(int(args[0]), int(args[1]) + 1):
                     print("connecting instance #" + str(i[3]) + " to " + args[2] + ":" + port)
-                    connect_to_server(default_bot_address, 10000 + i[3], args[2], port)
+                    connect_to_server(i, args[2], port)
+                    time.sleep(8000)
 
     def help_mconnect(self):
         print("Tells all instances of the bot in a range of ids to try to connect to a server.")
