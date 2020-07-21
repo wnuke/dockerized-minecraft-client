@@ -5,6 +5,7 @@ import requests
 import sys
 import timeit
 import traceback
+import urllib3
 from cmd import Cmd
 
 parser = argparse.ArgumentParser()
@@ -61,8 +62,11 @@ def remove_instance(instance):
 
 def cleanup():
     print("Closing all instances...")
+    instances_to_remove = []
     for i in instances:
         print("removing instance #" + str(i[3]) + "...")
+        instances_to_remove.append(i)
+    for i in instances_to_remove:
         remove_instance(i)
     client.close()
 
@@ -164,7 +168,7 @@ class MyPrompt(Cmd):
         print("Tells an instance of the bot to type a message in the chat box and press enter.")
 
     def do_mmessage(self, inp):
-        args = inp.split(" ", 1)
+        args = inp.split(" ", 2)
         if (len(args) < 2) and (
                 (len(args[0]) > 0 or not (args[0].isnumeric())) and (
                 len(args[1]) > 0 or not (args[1].isnumeric())) and len(args[2]) > 0):
@@ -206,7 +210,7 @@ class MyPrompt(Cmd):
             if len(args) > 3 and (len(args[3]) > 0 or not (args[3].isnumeric())):
                 port = args[3]
             for i in instances:
-                if i[3] in range(int(args[0], args[1])):
+                if i[3] in range(int(args[0]), int(args[1] + 1)):
                     print("connecting instance #" + str(i[3]) + " to " + args[2] + ":" + port)
                     connect_to_server(default_bot_address, 10000 + i[3], args[2], port)
 
@@ -232,6 +236,12 @@ def main():
         print("Invalid argument.")
     except IndexError:
         print("Not enough arguments.")
+    except requests.ConnectionError:
+        print("Bot encountered an error.")
+    except urllib3.exceptions.ProtocolError:
+        print("Network error.")
+    except TypeError:
+        print("Invalid argument.")
     main()
 
 
@@ -240,9 +250,7 @@ try:
     main()
 except KeyboardInterrupt:
     print("Keyboard interrupt...")
-    cleanup()
-    print("Cleanup done, exiting...")
 except Exception:
     traceback.print_exc(file=sys.stdout)
-    cleanup()
-    sys.exit(0)
+cleanup()
+sys.exit(0)
