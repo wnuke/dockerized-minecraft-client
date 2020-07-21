@@ -16,7 +16,7 @@ RUN sh gradlew build
 COPY "mc-http-api/src" "/srv/mc-http-api/src"
 RUN sh gradlew build
 
-FROM python:3.8-slim as download-mc
+FROM python:3.8-slim as getmc
 
 ENV GAMEVER="fabric-1.16" \
     BASEVER="1.16.1"
@@ -27,16 +27,19 @@ COPY download_mc.py /srv/download_mc.py
 
 RUN python /srv/download_mc.py --version=$BASEVER --directory=/srv/minecraft
 
-COPY fabric-1.16.json /srv/minecraft/versions/fabric-1.16/fabric-1.16.json
+COPY $GAMEVER.json /srv/minecraft/versions/$GAMEVER/$GAMEVER.json
 
-RUN python /srv/download_mc.py --version=$BASEVER --directory=/srv/minecraft
+RUN python /srv/download_mc.py --version=$GAMEVER --directory=/srv/minecraft
 
-FROM alpine:latest as setupmc
+COPY getlibs.py /srv/getlibs.py
 
-COPY --from=download-mc "/srv/minecraft" "/srv/minecraft"
+RUN python /srv/getlibs.py /srv/minecraft/versions/$GAMEVER/$GAMEVER.json /srv/minecraft/libraries/
+
+FROM alpine:latest as setupinstancedir
+
 COPY --from=faritone-build "/srv/fabritone/build/libs/fabritone-1.5.3.jar" "/srv/instance/mods/fabritone-1.5.3.jar"
 COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-1.0.0.jar" "/srv/instance/mods/mchttpapi-1.0.0.jar"
-COPY options.txt /srv/instance
+COPY options.txt /srv/instance/options.txt
 
 FROM adoptopenjdk:8u252-b09-jdk-hotspot-bionic
 
@@ -54,12 +57,14 @@ ENV GAMEVER="fabric-1.16" \
 
 COPY launch_mc.py /srv/
 
-COPY --from=setupmc /srv/minecraft /srv/instance /srv/
+COPY --from=getmc /srv/minecraft /srv/minecraft
+COPY --from=setupinstancedir /srv/instance /srv/instance
+
+WORKDIR /srv/instance
 
 ENTRYPOINT rm /tmp/.X5-lock \
     & Xvfb :5 -screen 0 100x100x24 \
     & export DISPLAY=:5; \
-    cd /srv/minecraft && \
     python /srv/launch_mc.py \
       --version=$GAMEVER \
       --gamedir="/srv/minecraft" \
