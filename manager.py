@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import docker
+import requests
 import sys
 import timeit
 import traceback
@@ -8,7 +9,7 @@ from cmd import Cmd
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dir", default="bot", help="Directory to find the bot Dockerfile in.")
-args = parser.parse_args().__dict__
+execargs = parser.parse_args().__dict__
 client = docker.from_env()
 
 instances = []
@@ -17,7 +18,8 @@ usedports = []
 
 def build_image():
     print("Building Docker images, this may take a while...")
-    elapsed_time = timeit.timeit(client.images.build(path=args["dir"], tag="dockermcbot:latest"), number=1) / 1000000
+    elapsed_time = timeit.timeit(client.images.build(path=execargs["dir"], tag="dockermcbot:latest"),
+                                 number=1) / 1000000
     print("Done building images! It took: " + elapsed_time + "s")
 
 
@@ -53,6 +55,7 @@ def instance_string(instance):
 
 def remove_instance(instance):
     instance[0].remove(force=True)
+    usedports.remove(10000 + instance[3])
     instances.remove(instance)
 
 
@@ -62,6 +65,17 @@ def cleanup():
         print("removing instance #" + str(i[3]) + "...")
         remove_instance(i)
     client.close()
+
+
+def send_message(botaddress, message, port):
+    requests.post(botaddress + str(port) + "/sendmsg", json={'message': str(message)})
+
+
+def connect_to_server(botaddress, address, port):
+    requests.post(botaddress + str(port) + "/connect", json={'address': str(address), 'port': str(port)})
+
+
+default_bot_address = 'http://localhost:'
 
 
 class MyPrompt(Cmd):
@@ -88,12 +102,12 @@ class MyPrompt(Cmd):
     def help_add(self):
         print("Creates a single instance of the bot, with username and password as optional arguments.")
 
-    def do_addm(self, inp):
+    def do_madd(self, inp):
         if len(inp) > 0 or not (inp.isnumeric()):
             for i in range(int(inp)):
                 create_instance([])
 
-    def help_addm(self):
+    def help_madd(self):
         print(
             "Creates a specified number fo instances of the bot, requires the desired number of instances as an argument.")
 
@@ -122,19 +136,83 @@ class MyPrompt(Cmd):
     def help_del(self):
         print("Deletes the specified instance of the bot, requires the id of the bot to remove.")
 
-    def do_delm(self, inp):
+    def do_mdel(self, inp):
         args = inp.split(" ")
-        if len(args) < 2:
+        if (len(args) < 2) and (
+                (len(args[0]) > 0 or not (args[0].isnumeric())) and (len(args[1]) > 0 or not (args[1].isnumeric()))):
             print("Requires two numeric arguments.")
         else:
-            if (len(args[0]) > 0 or not (args[0].isnumeric())) and (len(args[1]) > 0 or not (args[1].isnumeric())):
-                for i in instances:
-                    if i[3] in range(int(args[0]), int(args[1])):
-                        print("closing instance #" + str(i[3]))
-                        remove_instance(i)
+            for i in instances:
+                if i[3] in range(int(args[0]), int(args[1])):
+                    print("closing instance #" + str(i[3]))
+                    remove_instance(i)
 
-    def help_delm(self):
+    def help_mdel(self):
         print("Deletes all bots who's ids are in a given range, requires 2 numbers as arguments.")
+
+    def do_message(self, inp):
+        args = inp.split(" ", 1)
+        if (len(args) > 1) and (
+                (len(args[0]) > 0 or not (args[0].isnumeric())) and len(args[1]) > 0):
+            print("Requires one numeric argument followed by strings.")
+        else:
+            for i in instances:
+                if i[3] == int(args[0]):
+                    print("sending \"" + args[1] + "\" from instance #" + str(i[3]))
+                    send_message(default_bot_address, args[1], 10000 + i[3])
+
+    def help_message(self):
+        print("Tells an instance of the bot to type a message in the chat box and press enter.")
+
+    def do_mmessage(self, inp):
+        args = inp.split(" ", 1)
+        if (len(args) > 1) and (
+                (len(args[0]) > 0 or not (args[0].isnumeric())) and (
+                len(args[1]) > 0 or not (args[1].isnumeric())) and len(args[2]) > 0):
+            print("Requires two numeric arguments followed by strings.")
+        else:
+            for i in instances:
+                if i[3] in range(int(args[0]), int(args[1])):
+                    print("sending from instance #" + str(i[3]))
+                    send_message(default_bot_address, args[2], 10000 + i[3])
+
+    def help_mmessage(self):
+        print("Tells all instances of the bot in a range of ids to type a message in the chat box and press enter.")
+
+    def do_connect(self, inp):
+        args = inp.split(" ")
+        if (len(args) > 1) and (
+                (len(args[0]) > 0 or not (args[0].isnumeric())) and len(args[1]) > 0):
+            print("Requires one numeric argument followed by a string optionally followed by a numeric argument.")
+        else:
+            port = "25565"
+            if len(args) > 2 and (len(args[2]) > 0 or not (args[2].isnumeric())):
+                port = args[2]
+            for i in instances:
+                if i[3] == int(args[0]):
+                    print("connecting instance #" + str(i[3]) + " to " + args[1] + ":" + port)
+                    connect_to_server(default_bot_address, args[1], port)
+
+    def help_connect(self):
+        print("Tells an instance of the bot to try to connect to a server.")
+
+    def do_mconnect(self, inp):
+        args = inp.split(" ")
+        if (len(args) > 1) and (
+                (len(args[0]) > 0 or not (args[0].isnumeric())) and len(args[1]) > 0 or not (
+                args[1].isnumeric()) and len(args[2]) > 0):
+            print("Requires two numeric arguments followed by a string optionally followed by a numeric argument.")
+        else:
+            port = "25565"
+            if len(args) > 3 and (len(args[3]) > 0 or not (args[3].isnumeric())):
+                port = args[3]
+            for i in instances:
+                if i[3] in range(int(args[0], args[1])):
+                    print("connecting instance #" + str(i[3]) + " to " + args[2] + ":" + port)
+                    connect_to_server(default_bot_address, args[2], port)
+
+    def help_mconnect(self):
+        print("Tells all instances of the bot in a range of ids to try to connect to a server.")
 
     def do_prune(self, inp):
         print("Removing failed instances...")
