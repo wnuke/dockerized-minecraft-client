@@ -6,3 +6,6 @@
 	path = bot/fabritone
 	url = git@git.wnuke.dev:external-imports/fabritone.git
 	branch = fabritone/1.16.x-Fabric
+[submodule "instance-manager"]
+	path = instance-manager
+	url = git@git.wnuke.dev:wnuke/dockerized-minecraft-instance-manager.git

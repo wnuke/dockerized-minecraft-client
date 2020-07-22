@@ -255,22 +255,6 @@ class MyPrompt(Cmd):
     def help_connect(self):
         print("Tells an instance of the bot to try to connect to a server.")
 
-    def do_mconnect(self, inp):
-        args = inp.split(" ")
-        if (len(args) < 3) and (
-                (len(args[0]) > 0 or not (args[0].isnumeric())) and len(args[1]) > 0 or not (
-                args[1].isnumeric()) and len(args[2]) > 0):
-            print("Requires two numeric arguments followed by a string optionally followed by a numeric argument.")
-        else:
-            port = "25565"
-            if len(args) > 3 and (len(args[3]) > 0 or not (args[3].isnumeric())):
-                port = args[3]
-            for i in instances:
-                if i[3] in range(int(args[0]), int(args[1]) + 1):
-                    print("connecting instance #" + str(i[3]) + " to " + args[2] + ":" + port)
-                    connect_to_server(i, args[2], port)
-                    time.sleep(8000)
-
     def help_mconnect(self):
         print("Tells all instances of the bot in a range of ids to try to connect to a server.")
 
