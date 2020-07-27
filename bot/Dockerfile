@@ -1,20 +1,22 @@
-FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as faritone-build
+/FROM gradle:latest as faritone-build
 
 COPY "fabritone" "/srv/fabritone"
 
 WORKDIR "/srv/fabritone"
-RUN sh gradlew build
+RUN gradle build
 
-FROM adoptopenjdk/openjdk8:jdk8u252-b09-alpine-slim as mchttpapi-build
+
+FROM gradle:latest as mchttpapi-build
 
 WORKDIR "/srv/mc-http-api"
 COPY "mc-http-api/gradle" "/srv/mc-http-api/gradle"
 COPY "mc-http-api/build.gradle" "mc-http-api/settings.gradle" "mc-http-api/gradle.properties" "mc-http-api/gradlew" "/srv/mc-http-api"/
 
-RUN sh gradlew build
+RUN gradle build
 
 COPY "mc-http-api/src" "/srv/mc-http-api/src"
-RUN sh gradlew build
+RUN gradle build
+
 
 FROM python:3.8-slim as getmc
 
@@ -41,7 +43,8 @@ COPY --from=faritone-build "/srv/fabritone/build/libs/fabritone-1.5.3.jar" "/srv
 COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-1.0.0.jar" "/srv/instance/mods/mchttpapi-1.0.0.jar"
 COPY options.txt /srv/instance/options.txt
 
-FROM adoptopenjdk:8u252-b09-jdk-hotspot-bionic
+
+FROM adoptopenjdk/openjdk14:jdk-14.0.2_12-debianslim-slim
 
 COPY --from=python:3.8-slim / /
 
