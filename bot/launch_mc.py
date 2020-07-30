@@ -42,7 +42,7 @@ options = {
     "launcherVersion": "1.0",
     "demo": "false",
     "gameDirectory": str(args["instdir"]),
-    "jvmArguments": ["-Xms850M", "-Xmx850M", "-XX:+UnlockExperimentalVMOptions", "-XX:+AlwaysPreTouch", "-XX"
+    "jvmArguments": ["-Xms300M", "-Xmx450M", "-XX:+UnlockExperimentalVMOptions", "-XX:+AlwaysPreTouch", "-XX"
                      ":+UseAdaptiveGCBoundary", "-XX:+UseGCOverheadLimit", "-XX:MaxHeapFreeRatio=80",
                      "-XX:MinHeapFreeRatio=40", "-XX:-UseG1GC", "-XX:+UseZGC", "-XX:+DisableExplicitGC",
                      "-XX:-UseParallelGC", "-XX:-UseParallelOldGC"],

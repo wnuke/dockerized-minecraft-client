@@ -1,4 +1,4 @@
-/FROM gradle:latest as faritone-build
+FROM gradle:latest as faritone-build
 
 COPY "fabritone" "/srv/fabritone"
 
@@ -44,12 +44,14 @@ COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-1.0.0.jar" "/
 COPY options.txt /srv/instance/options.txt
 
 
-FROM adoptopenjdk/openjdk14:jdk-14.0.2_12-debianslim-slim
+FROM debian:buster
+
+RUN apt-get update && \
+    apt-get install openjdk-11-jre-headless -y
 
 COPY --from=python:3.8-slim / /
 
-RUN apt-get update -y && \
-    apt-get install --no-install-recommends xvfb -y && \
+RUN apt-get install --no-install-recommends xvfb -y && \
     pip install minecraft-launcher-lib requests && \
     rm -rf /var/lib/apt/lists/*
 

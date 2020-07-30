@@ -4,7 +4,7 @@ chatLinks:true
 enableVsync:false
 entityShadows:false
 bobView:false
-renderDistance:2
+renderDistance:4
 entityDistanceScaling:5.0
 guiScale:3
 particles:0
