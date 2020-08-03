@@ -8,7 +8,6 @@ renderDistance:4
 entityDistanceScaling:5.0
 guiScale:3
 particles:0
-maxFps:20
 difficulty:3
 graphicsMode:0
 ao:0
@@ -16,8 +15,6 @@ biomeBlendRadius:0
 renderClouds:false
 lang:en_us
 pauseOnLostFocus:false
-overrideWidth:20
-overrideHeight:20
 mipmapLevels:0
 useNativeTransport:true
 skipMultiplayerWarning:true
