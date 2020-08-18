@@ -43,9 +43,10 @@ options = {
     "demo": "false",
     "gameDirectory": str(args["instdir"]),
     "jvmArguments": ["-Xms300M", "-Xmx450M", "-XX:+UnlockExperimentalVMOptions", "-XX:+AlwaysPreTouch", "-XX"
-                     ":+UseAdaptiveGCBoundary", "-XX:+UseGCOverheadLimit", "-XX:MaxHeapFreeRatio=80",
+                                                                                                        ":+UseAdaptiveGCBoundary",
+                     "-XX:+UseGCOverheadLimit", "-XX:MaxHeapFreeRatio=80",
                      "-XX:MinHeapFreeRatio=40", "-XX:-UseG1GC", "-XX:+UseZGC", "-XX:+DisableExplicitGC",
-                     "-XX:-UseParallelGC", "-XX:-UseParallelOldGC"],
+                     "-XX:-UseParallelGC"],
     "resolutionWidth": "20",
     "resolutionHeight": "20",
 }
