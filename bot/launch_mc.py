@@ -22,7 +22,7 @@ parser.add_argument("--username", default="", help="Mojang username")
 parser.add_argument("--password", default="", help="Mojang password")
 args = parser.parse_args().__dict__
 
-username = get_random_string(8)
+username = "nukebot"
 uuid = str(uuid.uuid3(uuid.NAMESPACE_DNS, username))
 token = "abcdefghijklmnopqrstuvwxyz"
 
