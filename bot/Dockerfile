@@ -67,6 +67,9 @@ COPY --from=setupinstancedir /srv/instance /srv/instance
 
 WORKDIR /srv/instance
 
+LABEL dockermcbot="true"
+EXPOSE 8000
+
 ENTRYPOINT rm /tmp/.X5-lock \
     & Xvfb :5 -screen 0 100x100x24 \
     & export DISPLAY=:5; \
