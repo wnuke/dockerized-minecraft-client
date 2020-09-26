@@ -1,40 +1,39 @@
-This readme is outdated, it will be update after major changes have finished...
+# Docker MC
 
+Docker MC is a Dockerized version of Minecraft, uses mc-http-api as to cancel render and resource loading to imnprove performance and allow the instance manager to control it via a REST API.
 
-# Headless MC API
-
-Headless MC API is a Dockerized version of Minecraft with a FabricMC mod that allows you to control it via an HTTP API.
-
-## Setup (for developing the mod)
+## Developement Setup
 
 Get access to the repo by asking wnuke (wnuke#1010 on Discord).
 Download the source code:
 
-- `git clone git@git.wnuke.dev:wnuke/headless-fabric-mc`
+- `git clone git@github.com:wnuke-dev/dockerized-minecraft-client`
+- `cd dockerized-minecraft-client`
+- `git submodule update --init`
 
 If you do not have an IDE you should download one, I recommend [IntelliJ IDEA CE](https://www.jetbrains.com/idea/).
 
-Import the project to your IDE of choice:
+Install docker from here: https://www.docker.com/get-started
 
-- `cd headless-mc-api/headless-api-mod`
-- `./gradlew genSources`
-- `./gradlew openIdea` for IntelliJ IDEA
-- `./gradlew eclipse` for Eclipse
+For the individual modules (the instance manager and the http api) check the README in their respective repositories.
 
-## Setup (for building the Docker image)
+## Building And Running the Docker Image
 
-Get access to the repo by asking wnuke (wnuke#1010 on Discord).
-Download the source code:
+**NOTE:** I highly recommend using the instance manager as it provides a CLI for building and controlling instances using the REST API.
 
-- `git clone git@git.wnuke.dev:wnuke/headless-fabric-mc`
-- `git submodule update`
+Follow the steps in **Developement Setup** then run the following commands:
 
-Install Docker ([here](https://www.docker.com/products/docker-desktop) for Desktop users).
-Then run the following commands to build the image:
+- `cd bot`
+- `docker build . -t docker-mc:latest`
+- `docker run --rm --name docker-mc -p 8000:8000 docker-mc:latest`
 
-- `cd headless-mc-api`
-- `docker build .`
-
-## License
-
-This project is available under the GNU GPLv3. Please read the [license file](/LICENSE) for more information.
+Now you can send API requests to `localhost:8000` to control the instance of Docker MC, I recommend using a program like cURL to do so.
+For example, to login to a Minecraft account, connect to a server and say "Hello!":
+```bash 
+# Tell the client to get an auth token from mojang for the user "wnuke" with password "password"
+curl -v -H "Content-Type:application/json" -X POST -d "{\"username\":\"wnuke\",\"password\":\"password\"}" localhost:8000/login
+# Tell the client to connect to server with address "mc.blazenarchy.net" on port 25565
+curl -v -H "Content-Type:application/json" -X POST -d "{\"address\":\"mc.blazenarchy.net\",\"port\":\"25565\"}" localhost:8000/connect
+# Tell the client to send a chat message with content "Hello!" to the server it is currently connected to
+curl -v -H "Content-Type:application/json" -X POST -d "{\"message\":\"Hello!\"}" localhost:8000/sendmsg
+```
