@@ -40,7 +40,7 @@ RUN python /srv/getlibs.py /srv/minecraft/versions/$GAMEVER/$GAMEVER.json /srv/m
 FROM alpine:latest as setupinstancedir
 
 COPY --from=faritone-build "/srv/fabritone/build/libs/fabritone-1.5.3.jar" "/srv/instance/mods/fabritone-1.5.3.jar"
-COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-1.0.0.jar" "/srv/instance/mods/mchttpapi-1.0.0.jar"
+COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-2.0.0.jar" "/srv/instance/mods/mchttpapi-2.0.0.jar"
 COPY options.txt /srv/instance/options.txt
 
 
