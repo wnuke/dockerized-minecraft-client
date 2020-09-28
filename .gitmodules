@@ -5,6 +5,7 @@
 [submodule "instance-manager"]
 	path = instance-manager
 	url = https://github.com/wnuke/dockerized-minecraft-instance-manager.git
+	branch = 5ab463c056c9e0ea32b2765dc36b335f02816f1a
 [submodule "bot/mc-http-api"]
 	path = bot/mc-http-api
 	url = https://github.com/wnuke-dev/mc-http-api
