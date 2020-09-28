@@ -10,7 +10,7 @@ FROM gradle:latest as mchttpapi-build
 
 WORKDIR "/srv/mc-http-api"
 COPY "mc-http-api/gradle" "/srv/mc-http-api/gradle"
-COPY "mc-http-api/build.gradle.kts" "mc-http-api/settings.gradle.kts" "mc-http-api/gradlew" "/srv/mc-http-api"/
+COPY "mc-http-api/build.gradle" "mc-http-api/settings.gradle" "mc-http-api/gradle.properties" "mc-http-api/gradlew" "/srv/mc-http-api"/
 
 RUN gradle build
 
@@ -40,7 +40,7 @@ RUN python /srv/getlibs.py /srv/minecraft/versions/$GAMEVER/$GAMEVER.json /srv/m
 FROM alpine:latest as setupinstancedir
 
 COPY --from=faritone-build "/srv/fabritone/build/libs/fabritone-1.5.3.jar" "/srv/instance/mods/fabritone-1.5.3.jar"
-COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-2.0.0.jar" "/srv/instance/mods/mchttpapi-2.0.0.jar"
+COPY --from=mchttpapi-build "/srv/mc-http-api/build/libs/mchttpapi-1.0.0.jar" "/srv/instance/mods/mchttpapi-1.0.0.jar"
 COPY options.txt /srv/instance/options.txt
 
 
