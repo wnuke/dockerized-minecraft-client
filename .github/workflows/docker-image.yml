@@ -18,4 +18,4 @@ jobs:
         token: ${{ secrets.DMC_PAT }}
         submodules: recursive
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag docker-mc:$(date +%s)
+      run: cd bot && docker build . --file Dockerfile --tag docker-mc:$(date +%s)
