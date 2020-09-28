@@ -1,3 +1,5 @@
+[![Discord](https://img.shields.io/discord/745728805678874800?logo=discord)](https://discord.gg/MwBvhEz)
+[![build](https://github.com/wnuke-dev/dockerized-minecraft-client/workflows/Docker%20Image%20CI/badge.svg)]((https://github.com/wnuke-dev/dockerized-minecraft-client/actions?query=workflow%3A%22Docker%20Image%20CI%22))
 # Docker MC
 
 Docker MC is a Dockerized version of Minecraft, uses mc-http-api as to cancel render and resource loading to imnprove performance and allow the instance manager to control it via a REST API.
