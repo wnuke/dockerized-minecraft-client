@@ -1,0 +1,12 @@
+[submodule "instance-manager"]
+	path = instance-manager
+	url = https://github.com/wnuke-dev/dockerized-minecraft-instance-manager
+	branch = master
+[submodule "bot/mc-http-api"]
+	path = bot/mc-http-api
+	url = https://github.com/wnuke-dev/mc-http-api
+	branch = java
+[submodule "bot/fabritone"]
+	path = bot/fabritone
+	url = https://gitlab.com/CDAGaming/fabritone
+	branch = fabritone/1.16.1-Fabric
