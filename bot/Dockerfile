@@ -10,7 +10,7 @@ FROM gradle:latest as mchttpapi-build
 
 WORKDIR "/srv/mc-http-api"
 COPY "mc-http-api/gradle" "/srv/mc-http-api/gradle"
-COPY "mc-http-api/build.gradle" "mc-http-api/settings.gradle" "mc-http-api/gradle.properties" "mc-http-api/gradlew" "/srv/mc-http-api"/
+COPY "mc-http-api/build.gradle.kts" "mc-http-api/settings.gradle.kts" "mc-http-api/gradlew" "/srv/mc-http-api"/
 
 RUN gradle build
 
