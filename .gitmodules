@@ -1,11 +1,11 @@
 [submodule "bot/mc-http-api"]
 	path = bot/mc-http-api
-	url = git@github.com:wnuke/mc-http-api
+	url = https://github.com/wnuke/mc-http-api.git
 	branch = master
 [submodule "bot/fabritone"]
 	path = bot/fabritone
-	url = git@git.wnuke.dev:external-imports/fabritone.git
+	url = https://git.wnuke.dev/external-imports/fabritone.git
 	branch = fabritone/1.16.x-Fabric
 [submodule "instance-manager"]
 	path = instance-manager
-	url = git@github.com:wnuke/dockerized-minecraft-instance-manager.git
+	url = https://github.com/wnuke/dockerized-minecraft-instance-manager.git
